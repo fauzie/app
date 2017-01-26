@@ -29,10 +29,15 @@ angular.module('fauzie.services', [])
   query.descending('year');
 
   return {
+    items: [],
     fetch: function() {
       query.find().then(
       function (projects) {
-        result.resolve(projects);
+        this.items = projects.reduce(function (obj, pro) {
+          obj[pro.id] = pro.attributes;
+          return obj;
+        }, {});
+        result.resolve(this.items);
       },
       function(error) {
         result.reject(error);
@@ -40,13 +45,19 @@ angular.module('fauzie.services', [])
       return result.promise;
     },
     get: function(obj) {
-      query.get(obj).then(
-      function (projects) {
-        result.resolve(projects);
-      },
-      function(error) {
-        result.reject(error);
-      });
+      if (this.items.length) {
+        this.items.forEach( function(pro) {
+          if (pro.id == obj) result.resolve(pro.attributes);
+        });
+      } else {
+        query.get(obj).then(
+        function (pro) {
+          result.resolve(pro.attributes);
+        },
+        function(error) {
+          result.reject(error);
+        });
+      }
       return result.promise;
     }
   }

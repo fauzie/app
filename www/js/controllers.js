@@ -57,7 +57,7 @@ angular.module('fauzie.controllers', [])
 
   var parseGallery = function(items){
     var results = [];
-    angular.forEach(items, function(item){
+    items.forEach( function(item){
       results.push({
         sub: item.get('Title') + ' (' + item.get('Year') + ')',
         src: item.get('Image').url()
@@ -78,43 +78,23 @@ angular.module('fauzie.controllers', [])
 })
 
 .controller('ProjectsCtrl', function($scope, $timeout, $ionicLoading, appProject) {
-  
-  $scope.projects = [];
-  $scope.go = function ( path ) {
-    $location.path( path );
-  };
 
-  var parseProjects = function(objs) {
-    var results = objs.reduce(function (obj, pro) {
-      obj[pro.id] = pro.attributes;
-      return obj;
-    }, {});
-    return results;
-  };
+  $scope.projects = [];
 
   $ionicLoading.show()
   .then(function(){
     appProject.fetch()
     .then(function(_data){
       $ionicLoading.hide();
-      $timeout($scope.projects = parseProjects(_data), 0);
+      window.localStorage.setItem("Object.Project", JSON.stringify(_data));
+      $timeout($scope.projects = _data, 0);
     });
   });
 
 })
 
-.controller('ProjectCtrl', function($scope, $stateParams, $timeout, $ionicLoading, appProject) {
-
+.controller('ProjectCtrl', function($scope, $stateParams, appProject) {
   $scope.id = $stateParams.projectId;
-  $scope.data = [];
-
-  $ionicLoading.show()
-  .then(function(){
-    appProject.get($scope.id)
-    .then(function(_data){
-      console.log(_data.attributes);
-      $ionicLoading.hide();
-      $timeout($scope.data = _data.attributes, 0);
-    });
-  });
+  var items = JSON.parse(localStorage["Object.Project"]);
+  $scope.data = items[ $scope.id ];
 });

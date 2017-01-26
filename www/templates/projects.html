@@ -1,10 +1,10 @@
-<ion-view view-title="Projects - fauzie" cache-view="false">
+<ion-view view-title="Projects - fauzie">
   <ion-nav-title>
     Projects <span class="subtitle">my recent works</span>
   </ion-nav-title>
   <ion-content>
     <ion-list class="projects">
-      <ion-item class="item-thumbnail-left" ng-repeat="(id, project) in projects" ui-sref="app.project({projectId : id})">
+      <ion-item class="item-thumbnail-left" ng-repeat="(id, project) in projects" href="#/project/{{id}}">
         <img ng-src="http://res.cloudinary.com/fauzie/image/upload/{{project.thumb}}">
         <h2>{{project.name}}</h2>
         <h4>{{project.cat}}</h4>

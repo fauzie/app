@@ -77,7 +77,6 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.
 
   .state('app.projects', {
     url: '/projects',
-    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/projects.html',
@@ -88,7 +87,6 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.
 
   .state('app.project', {
     url: '/project/:projectId',
-    cache: false,
     views: {
       'menuContent': {
         templateUrl: 'templates/project.html',
