@@ -1,0 +1,76 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+*/
+
+// Typography
+$font-family-base:                'Titillium Web', 'Roboto', 'Segoe UI', sans-serif;
+$headings-font-family:            'Titillium Web', 'Roboto', 'Segoe UI', sans-serif;
+$headings-font-weight:            600;
+$base-background-color:           #111;
+$base-color:                      #ccc;
+$light:                           #fff;
+$dark:                            #111;
+$stable:                          #222;
+$positive:                        #fa023c;
+$calm:                            #ff7a99;
+$balanced:                        $positive;
+$energized:                       $positive;
+$assertive:                       $positive;
+$royal:                           $positive;
+
+// Content
+$scroll-refresh-icon-color:       #eee;
+
+// Buttons
+$button-color:                    $light;
+$button-border-radius:            0;
+$button-border-width:             2px;
+$button-padding:                  20px;
+
+$button-light-bg:                 #fa023c;
+$button-light-text:               $light;
+$button-light-border:             #fa023c;
+$button-light-active-bg:          #fafafa;
+$button-light-active-border:      #fa023c;
+
+$button-dark-bg:                  $dark;
+$button-dark-text:                $light;
+$button-dark-border:              #fa023c;
+$button-dark-active-bg:           #fa023c;
+$button-dark-active-border:       #fa023c;
+
+$button-stable-bg:                transparent;
+$button-stable-text:              #fff;
+$button-stable-border:            #fa023c;
+$button-stable-active-bg:         #fa023c;
+$button-stable-active-border:     #fa023c;
+
+// Bars
+$bar-height:                      50px;
+$bar-title-font-size:             16px;
+
+// Forms
+$input-color:                     $light;
+$input-label-color:               $base-color;
+$input-color-placeholder:         $base-color;
+
+// Modal
+$modal-bg-color:                  #111;
+$modal-backdrop-bg-active:        rgba($light,0.8);
+$modal-backdrop-bg-inactive:      rgba(0,0,0,0);
+
+// Items
+$item-default-bg:                 #111;
+$item-default-border:             #222;
+$item-default-text:               $light;
+$item-default-active-bg:          #333;
+$item-default-active-border:      #222;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts";
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+@import "style.scss";
+@import "gallery.scss";

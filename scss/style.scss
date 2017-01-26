@@ -1,0 +1,105 @@
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #fff;
+}
+
+.button {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.menu {
+  .scroll-content {
+    background-color: #111;
+    bottom: 70px;
+  }
+  .bar-footer {
+    height: 70px;
+    .button {
+      font-size: 16px;
+      line-height: 40px;
+    }
+  }
+}
+
+.bar {
+  .title {
+    font-size: 24px;
+    .subtitle {
+      color: #929292;
+      line-height: 1;
+      font-size: 60%;
+      font-weight: 300;
+      margin-left: .5rem;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.row-full-height {
+  height: 100%;
+}
+
+.img-fluid {
+  width: 100%;
+  height: auto;
+}
+
+// Specific Page Styles
+
+ion-view[state="app.home"] {
+  ion-content {
+    background-image: url(../img/fauzie-bg.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #111;
+    text-align: center;
+    padding: 30px 50px;
+    .btn-home-about {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+ion-view[state="app.about"] {
+  ion-content {
+    background-image: url(../img/fauzie-bg2.jpg);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #111;
+    .scroll {
+      background-color: rgba(0,0,0,.3);
+      text-align: center;
+    }
+  }
+}
+
+.gallery-view {
+  &.photos {
+    margin: 15px auto;
+    .image-container {
+      border: 2px solid #111;
+    }
+  }
+}
+
+hr.primary {
+  border: 0;
+  border: 3px solid #fa023c;
+  max-width: 120px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.lead {
+  color: #929292;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.7;
+  text-align: center;
+  margin: 15px auto 30px;
+  width: 75%;
+}

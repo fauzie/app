@@ -1,0 +1,26 @@
+<ion-view view-title="{{data.year}} {{data.name}}" cache-view="false">
+  <ion-content class="padding">
+    <ion-list class="card">
+      <ion-item class="item-image">
+        <ion-scroll direction="xy" zooming="true" min-zoom="1.0" max-zoom="2.5" overflow-scroll="false" has-bouncing="true">
+          <img ng-src="{{data.image | cloudImageURL}}">
+        </ion-scroll>
+      </ion-item>
+      <ion-item>
+        <h3>{{data.name}}</h3>
+        <p>{{data.url | getDomain}}</p>
+      </ion-item>
+      <ion-item class="tabs tabs-secondary tabs-icon-left">
+        <a href="#" class="tab-item">
+          <i class="icon ion-monitor"></i> Visit
+        </a>
+        <a href="#" class="tab-item">
+          <i class="icon ion-chatbox"></i> Comment
+        </a>
+        <a href="#" class="tab-item">
+          <i class="icon ion-share"></i> Share
+        </a>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
