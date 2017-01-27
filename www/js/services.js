@@ -1,3 +1,11 @@
+/**
+ * Angular Factory Module
+ * 
+ * @since     1.0.0
+ * @author    Rizal Fauzie <rizal@fauzie.my.id>
+ * @package   fauzie.app
+ */
+
 angular.module('fauzie.services', [])
 
 .factory('appGallery', function($q) {
@@ -23,7 +31,7 @@ angular.module('fauzie.services', [])
 
 .factory('appProject', function($q) {
 
-  var result = $q.defer();
+  var storage = window.localStorage.getItem('Project');
   var Project = Parse.Object.extend('Project');
   var query = new Parse.Query(Project);
   query.descending('year');
@@ -31,25 +39,32 @@ angular.module('fauzie.services', [])
   return {
     items: [],
     fetch: function() {
-      query.find().then(
-      function (projects) {
-        this.items = projects.reduce(function (obj, pro) {
-          obj[pro.id] = pro.attributes;
-          return obj;
-        }, {});
-        result.resolve(this.items);
-      },
-      function(error) {
-        result.reject(error);
-      });
-      return result.promise;
-    },
-    get: function(obj) {
-      if (this.items.length) {
-        this.items.forEach( function(pro) {
-          if (pro.id == obj) result.resolve(pro.attributes);
+      var result = $q.defer();
+      if (storage === null || JSON.parse(storage).length < 1) {
+        query.find().then(
+        function (projects) {
+          this.items = projects.reduce(function (obj, pro) {
+            obj[pro.id] = pro.attributes;
+            return obj;
+          }, {});
+          window.localStorage.setItem('Project', JSON.stringify(this.items));
+          result.resolve(this.items);
+        },
+        function(error) {
+          result.reject(error);
         });
       } else {
+        this.items = JSON.parse(storage);
+        result.resolve(this.items);
+      }
+      return result.promise;
+    },
+    getData: function(obj) {
+      if ( obj === null ) {
+        return [];
+      }
+      var result = $q.defer();
+      if (storage === null) {
         query.get(obj).then(
         function (pro) {
           result.resolve(pro.attributes);
@@ -57,6 +72,14 @@ angular.module('fauzie.services', [])
         function(error) {
           result.reject(error);
         });
+      } else {
+        var temp = JSON.parse(storage);
+        if ( temp[obj] ) {
+          var tempdata = temp[obj];
+          result.resolve( tempdata );
+        } else {
+          result.reject();
+        }
       }
       return result.promise;
     }

@@ -1,3 +1,11 @@
+/**
+ * Angular Controller Module
+ * 
+ * @since     1.0.0
+ * @author    Rizal Fauzie <rizal@fauzie.my.id>
+ * @package   fauzie.app
+ */
+
 angular.module('fauzie.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
@@ -86,15 +94,24 @@ angular.module('fauzie.controllers', [])
     appProject.fetch()
     .then(function(_data){
       $ionicLoading.hide();
-      window.localStorage.setItem("Object.Project", JSON.stringify(_data));
       $timeout($scope.projects = _data, 0);
     });
   });
 
 })
 
-.controller('ProjectCtrl', function($scope, $stateParams, appProject) {
+.controller('ProjectCtrl', function($scope, $timeout, $stateParams, $ionicLoading, appProject) {
+
+  $scope.data = [];
   $scope.id = $stateParams.projectId;
-  var items = JSON.parse(localStorage["Object.Project"]);
-  $scope.data = items[ $scope.id ];
+
+  $ionicLoading.show()
+  .then(function(){
+    appProject.getData($scope.id)
+    .then(function(item){
+      $ionicLoading.hide();
+      $timeout($scope.data = item, 0);
+    });
+  });
+
 });
