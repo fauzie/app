@@ -8,75 +8,79 @@
 
 angular.module('fauzie.services', [])
 
-.factory('appGallery', function($q) {
+.factory('appParse', function($q, $cordovaDevice) {
 
-  var result = $q.defer();
-  var Gallery = Parse.Object.extend('Gallery');
-  var query = new Parse.Query(Gallery);
-
-  return {
-    fetch: function() {
-      query.find().then(
-      function (galleries) {
-        result.resolve(galleries);
-      },
-      function(error) {
-        result.reject(error);
-      });
-      return result.promise;
-    }
-  }
-
-})
-
-.factory('appProject', function($q) {
-
-  var storage = window.localStorage.getItem('Project');
-  var Project = Parse.Object.extend('Project');
-  var query = new Parse.Query(Project);
-  query.descending('year');
+  var deviceID = (typeof window.device === 'undefined') ? 'Browser' : $cordovaDevice.getUUID();
 
   return {
     items: [],
-    fetch: function() {
-      var result = $q.defer();
-      if (storage === null || JSON.parse(storage).length < 1) {
+    fetch: function(obj, sort, order) {
+      
+      obj   = obj || null;
+      sort  = sort || null;
+      order = order || 'ASC';
+
+      var result  = $q.defer();
+      var Object  = Parse.Object.extend(obj);
+      var query   = new Parse.Query(Object);
+      var objkey  = deviceID + '/' + obj;
+      var storage = JSON.parse(window.localStorage.getItem(objkey));
+
+      if ( obj === null ) {
+        return this.items;
+      }
+
+      if ( sort !== null ) {
+        if ( order == 'ASC' ) {
+          query.ascending(sort);
+        } else if ( order == 'DESC' ) {
+          query.descending(sort);
+        }
+      }
+
+      if (this.items.length > 1) {
+        result.resolve(this.items);
+      }
+      else if (storage === null || storage.length < 2) {
         query.find().then(
-        function (projects) {
-          this.items = projects.reduce(function (obj, pro) {
-            obj[pro.id] = pro.attributes;
-            return obj;
+        function (response) {
+          this.items = response.reduce(function (item, key) {
+            item[key.id] = key.attributes;
+            return item;
           }, {});
-          window.localStorage.setItem('Project', JSON.stringify(this.items));
+          window.localStorage.setItem(objkey, JSON.stringify(this.items));
           result.resolve(this.items);
         },
         function(error) {
           result.reject(error);
         });
       } else {
-        this.items = JSON.parse(storage);
+        this.items = storage;
         result.resolve(this.items);
       }
       return result.promise;
     },
-    getData: function(obj) {
-      if ( obj === null ) {
+    get: function(obj, group) {
+      if ( obj === null || group === null ) {
         return [];
       }
-      var result = $q.defer();
-      if (storage === null) {
+      var result  = $q.defer();
+      var Object  = Parse.Object.extend(group);
+      var query   = new Parse.Query(Object);
+      var objkey  = deviceID + '/' + group;
+      var storage = JSON.parse(window.localStorage.getItem(objkey));
+
+      if (storage === null || storage.length < 2) {
         query.get(obj).then(
-        function (pro) {
-          result.resolve(pro.attributes);
+        function (item) {
+          result.resolve(item.attributes);
         },
         function(error) {
           result.reject(error);
         });
       } else {
-        var temp = JSON.parse(storage);
-        if ( temp[obj] ) {
-          var tempdata = temp[obj];
-          result.resolve( tempdata );
+        if ( storage[obj] ) {
+          result.resolve( storage[obj] );
         } else {
           result.reject();
         }

@@ -1,0 +1,19 @@
+<ion-view view-title="Skills - fauzie">
+  <ion-nav-title>
+    Skills <span class="subtitle">illustration of my skill mastery</span>
+  </ion-nav-title>
+  <ion-content>
+    <ion-list ng-animate-children class="skills">
+      <ion-item 
+      auto-divider 
+      auto-divider-value="{{skill.type}}" 
+      auto-divider-function="dividerFunction" 
+      class="item-icon-left" 
+      ng-repeat="skill in skills">
+        <i class="icon {{skill.icon}}"></i> {{skill.name}}
+        <span class="badge badge-assertive">{{skill.value}}%</span>
+        <span class="skillbar" style="width:{{skill.value}}%"></span>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

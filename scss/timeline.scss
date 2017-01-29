@@ -1,0 +1,157 @@
+
+// Timeline style
+
+.cd-container {
+  width: 93%;
+  max-width: 1170px;
+  margin: 0 auto;
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+  .timelineText {
+    color: $base-color;
+  }
+  .timelineIcon {
+    font-size: 25px;
+    color: $base-color;
+  }
+  .cd-author {
+    color: darken( $base-color, 20% );
+    margin-top: 5px;
+  }
+}
+
+#cd-timeline {
+  position: relative;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  margin-left: 10px !important;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 18px;
+    height: 100%;
+    width: 4px;
+    background: $positive;
+  }
+}
+
+// Timeline Text Block
+.cd-timeline-block {
+  position: relative;
+  margin: 2em 0;
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Timeline Icon
+.cd-timeline-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: $positive;
+  border-style: solid;
+  border-width: 2px;
+  padding-top:5px;
+  background: $stable;
+  text-align: center;
+  i {
+    color: $base-color;
+  }
+}
+
+// Timeline Picture
+.cd-timeline-picture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border-color: $positive;
+  border-style: solid;
+  border-width: 2px;
+  background: $stable;
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 50%;
+  }
+}
+
+// Timeline Right Content
+.cd-timeline-content {
+  position: relative;
+  margin-left: 60px;
+  background: $stable;
+  border-color: $stable;
+  border-radius: 0.25em;
+  border-style: solid;
+  border-width: 2px;
+  margin-bottom: 10px;
+  padding: 10px;
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .heading {
+    color: $positive;
+    margin: 0;
+  }
+  p, & .cd-read-more, & .cd-date {
+    font-size: 13px;
+    font-size: 0.8125rem;
+  }
+  p {
+    margin: 1em 0;
+    line-height: 1.6;
+  }
+  .cd-read-more, & .cd-date {
+    display: inline-block;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    height: 0;
+    width: 0;
+    border: 7px solid transparent;
+    border-right: 7px solid $positive;
+    border-right-color: inherit;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .cd-timeline-content {
+    .heading {
+      font-size: 20px;
+      font-size: 1.25rem;
+    }
+    p {
+      font-size: 16px;
+      font-size: 1rem;
+    }
+    .cd-read-more, & .cd-date {
+      font-size: 14px;
+      font-size: 0.875rem;
+    }
+  }
+}

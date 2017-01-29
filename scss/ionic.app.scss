@@ -67,10 +67,16 @@ $item-default-text:               $light;
 $item-default-active-bg:          #333;
 $item-default-active-border:      #222;
 
+$item-divider-bg:                 #191919;
+$item-divider-color:              #cecece;
+
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts";
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+@import "devicons.scss";
+@import "animate.scss";
+@import "timeline.scss";
 @import "style.scss";
 @import "gallery.scss";

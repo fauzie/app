@@ -4,8 +4,11 @@
   </ion-nav-title>
   <ion-content>
     <ion-list class="projects">
-      <ion-item class="item-thumbnail-left" ng-repeat="(id, project) in projects" href="#/project/{{id}}">
-        <img ng-src="http://res.cloudinary.com/fauzie/image/upload/{{project.thumb}}">
+      <ion-item 
+      class="item-thumbnail-left" 
+      ng-repeat="(id, project) in projects" 
+      href="#/project/{{id}}">
+        <img ng-src="{{project.thumb | cloudImageURL}}">
         <h2>{{project.name}}</h2>
         <h4>{{project.cat}}</h4>
         <h6>{{project.year}}</h6>

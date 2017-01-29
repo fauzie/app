@@ -49,26 +49,33 @@ angular.module('fauzie.controllers', [])
   };
 })
 
-.controller('HomeCtrl', function($scope, $ionicNavBarDelegate, $timeout) {
+.controller('HomeCtrl', function($scope, $state, $ionicNavBarDelegate, $timeout) {
 
-  $scope.$on('$ionicView.enter', function() {
-    $timeout(function() {
-      $ionicNavBarDelegate.align('center');
-    });
+  $scope.about = function () {
+    $state.go('app.about');
+    window.location.reload();
+  }
+
+  $scope.logoclass = 'transparent';
+  $scope.imgclass = 'transparent';
+  $scope.$on('$ionicView.enter', function(){
+    $timeout( function() { $ionicNavBarDelegate.align('center') }, 0 );
+    $timeout( function() { $scope.logoclass = 'animated flipInX' }, 600 );
+    $timeout( function() { $scope.imgclass = 'animated zoomIn' }, 900 );
   });
 
 })
 
-.controller('GalleryCtrl', function($scope, $timeout, $ionicLoading, appGallery) {
+.controller('GalleryCtrl', function($scope, $timeout, $ionicLoading, appParse) {
 
   $scope.items = [];
 
   var parseGallery = function(items){
     var results = [];
-    items.forEach( function(item){
+    angular.forEach(items, function(item){
       results.push({
-        sub: item.get('Title') + ' (' + item.get('Year') + ')',
-        src: item.get('Image').url()
+        sub: item.Title + ' (' + item.Year + ')',
+        src: item.Image.url
       });
     });
     return results;
@@ -76,7 +83,7 @@ angular.module('fauzie.controllers', [])
 
   $ionicLoading.show()
   .then(function(){
-    appGallery.fetch()
+    appParse.fetch('Gallery', 'Year', 'ASC')
     .then(function(_data){
       $ionicLoading.hide();
       $timeout($scope.items = parseGallery(_data), 0);
@@ -85,13 +92,62 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ProjectsCtrl', function($scope, $timeout, $ionicLoading, appProject) {
+.controller('ExpsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+
+  $scope.exps = [];
+
+  $ionicLoading.show()
+  .then(function(){
+    appParse.fetch('Experience', 'index', 'ASC')
+    .then(function(_data){
+      $ionicLoading.hide();
+      $timeout($scope.exps = _data, 0);
+    });
+  });
+
+})
+
+.controller('SkillsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+
+  $scope.skills = [];
+
+  $ionicLoading.show()
+  .then(function(){
+    appParse.fetch('Skill', 'type', 'DESC')
+    .then(function(_data){
+      $ionicLoading.hide();
+      $timeout($scope.skills = _data, 0);
+    });
+  });
+
+  $scope.dividerFunction = function(string){
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+})
+
+.controller('ServicesCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+
+  $scope.services = [];
+
+  $ionicLoading.show()
+  .then(function(){
+    appParse.fetch('Service', 'order', 'ASC')
+    .then(function(_data){
+      $ionicLoading.hide();
+      $timeout($scope.services = _data, 0);
+    });
+  });
+
+})
+
+.controller('ProjectsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
 
   $scope.projects = [];
 
   $ionicLoading.show()
   .then(function(){
-    appProject.fetch()
+    appParse.fetch('Project', 'year', 'DESC')
     .then(function(_data){
       $ionicLoading.hide();
       $timeout($scope.projects = _data, 0);
@@ -100,14 +156,31 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ProjectCtrl', function($scope, $timeout, $stateParams, $ionicLoading, appProject) {
+.controller('ProjectCtrl', function($scope, $timeout, $stateParams, $ionicLoading, $cordovaSocialSharing, appParse) {
 
   $scope.data = [];
   $scope.id = $stateParams.projectId;
 
+  // Visit Project Site
+  $scope.preview = function(){
+    if ($scope.data.length > 1) return false;
+    if ($scope.data.url == '') return false;
+    window.open($scope.data.url, '_blank', 'location=no');
+    return false;
+  }
+
+  // share project
+  $scope.share = function(){
+    if ($scope.data.length > 1) return false;
+    var message = $scope.data.name +' is a '+ $scope.data.dat +' project developed by fauzie at '+ $scope.data.year+'.';
+    $cordovaSocialSharing.share(message, 'Project '+$scope.data.name, null, $scope.data.url).finally(function(){
+      return false;
+    });
+  }
+
   $ionicLoading.show()
   .then(function(){
-    appProject.getData($scope.id)
+    appParse.get($scope.id, 'Project')
     .then(function(item){
       $ionicLoading.hide();
       $timeout($scope.data = item, 0);

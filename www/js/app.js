@@ -6,7 +6,7 @@
  * @package   fauzie.app
  */
 
-angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.services'])
+angular.module('fauzie', ['ionic', 'ion-gallery', 'ngCordova', 'fauzie.controllers', 'fauzie.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -14,7 +14,8 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
-
+      // Replace window open
+      window.open = cordova.InAppBrowser.open;
     }
     if (window.StatusBar) {
       StatusBar.styleDefault();
@@ -75,6 +76,36 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.
     }
   })
 
+  .state('app.exps', {
+    url: '/exps',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/exps.html',
+        controller: 'ExpsCtrl'
+      }
+    }
+  })
+
+  .state('app.skills', {
+    url: '/skills',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/skills.html',
+        controller: 'SkillsCtrl'
+      }
+    }
+  })
+
+  .state('app.services', {
+    url: '/services',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/services.html',
+        controller: 'ServicesCtrl'
+      }
+    }
+  })
+
   .state('app.projects', {
     url: '/projects',
     views: {
@@ -96,6 +127,33 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'fauzie.controllers', 'fauzie.
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/home');
+})
+
+.directive('autoDivider', function($timeout) {  
+	var lastDivideKey = "";
+
+	return {
+		link: function(scope, element, attrs) {
+			var key = attrs.autoDividerValue;
+
+			var defaultDivideFunction = function(k){
+				return k.slice( 0, 1 ).toUpperCase();
+			}
+      
+			var doDivide = function(){
+				var divideFunction = scope.$apply(attrs.autoDividerFunction) || defaultDivideFunction;
+				var divideKey = divideFunction(key);
+				
+				if(divideKey != lastDivideKey) {
+					var contentTr = angular.element("<ion-item class='item item-divider'>"+divideKey+"</ion-item>");
+					element[0].parentNode.insertBefore(contentTr[0], element[0]);
+				}
+				lastDivideKey = divideKey;
+			}
+
+			$timeout(doDivide,0);
+		}
+	}
 })
 
 .filter('cloudImageURL', function () {

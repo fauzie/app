@@ -7,33 +7,20 @@
 
     <link rel="manifest" href="manifest.json">
 
-    <!-- un-comment this code to enable service worker
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(() => console.log('service worker installed'))
-          .catch(err => console.log('Error', err));
-      }
-    </script>-->
-
-    <!-- load custom fon families -->
+    <!-- load custom font families -->
     <link href="fonts/fonts.css" rel="stylesheet">
 
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
 
-    <style>
-    
-    </style>
-
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <!--<script src="cordova.js"></script>-->
+    <!-- cordova/angularjs plugin js -->
+    <script src="js/plugins.min.js"></script>
 
-    <!-- Ionic Gallery JS -->
-    <script src="js/gallery.min.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
 
     <!-- Parse JS SDK -->
     <script src="js/parse.min.js"></script>

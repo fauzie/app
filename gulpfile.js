@@ -5,13 +5,17 @@ var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
 var sh = require('shelljs');
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: ['./scss/**/*.scss'],
+  js: './www/js/'
 };
 
-gulp.task('default', ['sass']);
+gulp.task('default', ['sass', 'scripts']);
 
 gulp.task('sass', function(done) {
   gulp.src('./scss/ionic.app.scss')
@@ -23,6 +27,29 @@ gulp.task('sass', function(done) {
     }))
     .pipe(rename({ extname: '.min.css' }))
     .pipe(gulp.dest('./www/css/'))
+    .on('end', done);
+});
+
+gulp.task('scripts', function(done) {
+  gulp.src([
+    paths.js+'gallery.min.js',
+    paths.js+'ng-cordova.min.js'
+    ])
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(concat('plugins.min.js'))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(paths.js));
+  gulp.src([
+    paths.js+'app.js',
+    paths.js+'services.js',
+    paths.js+'controllers.js'
+    ])
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(concat('app.min.js'))
+    .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(paths.js))
     .on('end', done);
 });
 

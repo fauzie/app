@@ -85,6 +85,41 @@ ion-view[state="app.about"] {
   }
 }
 
+ion-view[state="app.services"] {
+  background-color: #222;
+  border-radius: 6px;
+  .list.card {
+    background-color: #222;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+    .item:first-child {
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+    .item:last-child {
+      border-color: #fa023c;
+      border-bottom-right-radius: 6px;
+      border-bottom-left-radius: 6px;
+    }
+    .item-body {
+      .icon {
+        font-size: 100px;
+        line-height: 110px;
+      }
+      p:last-child {
+        margin: 15px auto 5px;
+        max-width: 85%;
+      }
+    }
+  }
+}
+
+ion-view[state="app.project"] {
+  background-color: #1b1b1b;
+  ion-content {
+    padding-top: 20px;
+  }
+}
+
 .gallery-view {
   &.photos {
     margin: 15px auto;
@@ -94,9 +129,32 @@ ion-view[state="app.about"] {
   }
 }
 
+.services {
+  .card {
+    &.ng-enter-stagger {
+      -webkit-animation-delay: .2s;
+      animation-delay: .2s;
+    }
+    &.ng-enter {
+      -webkit-animation: fadeInUpBig 1s;
+      animation: fadeInUpBig 1s;
+    }
+  }
+}
+
 .projects {
-  .item-thumbnail-left {
+  .item {
     min-height: 80px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    &.ng-enter-stagger {
+      -webkit-animation-delay: .2s;
+      animation-delay: .2s;
+    }
+    &.ng-enter {
+      -webkit-animation: flipInX 1s;
+      animation: flipInX 1s;
+    }
     .item-content {
       padding-top: 16px;
       padding-left: 105px;
@@ -109,6 +167,49 @@ ion-view[state="app.about"] {
         color: #979797;
       }
     }
+  }
+}
+
+.skills {
+  .list {
+    padding: 0 0 20px;
+  }
+  .item {
+    position: relative;
+    .badge {
+      right: 10px;
+      font-weight: 400;
+    }
+    .skillbar {
+      display: block;
+      background-color: #fa023c;
+      border: 0;
+      height: 3px;
+      max-width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 2;
+    }
+    &.ng-enter-stagger .skillbar {
+      -webkit-animation-delay: .2s;
+      animation-delay: .2s;
+    }
+    &.ng-enter .skillbar {
+      -webkit-animation: slideInLeft 1s;
+      animation: slideInLeft 1s;
+    }
+  }
+}
+
+.exp-item {
+  &.ng-enter-stagger {
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s;
+  }
+  &.ng-enter {
+    -webkit-animation: slideInRight 1s;
+    animation: slideInRight 1s;
   }
 }
 
@@ -128,4 +229,15 @@ hr.primary {
   text-align: center;
   margin: 15px auto 30px;
   width: 75%;
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.item-divider {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
 }

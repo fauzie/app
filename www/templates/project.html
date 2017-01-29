@@ -1,7 +1,5 @@
 <ion-view>
   <ion-nav-title>{{data.year}} - {{data.name}}</ion-nav-title>
-  <ion-nav-back-button>
-	</ion-nav-back-button>
   <ion-content class="padding">
     <ion-list class="card">
       <ion-item class="item-image">
@@ -14,13 +12,13 @@
         <p>{{data.url | getDomain}}</p>
       </ion-item>
       <ion-item class="tabs tabs-secondary tabs-icon-left">
-        <a href="#" class="tab-item">
-          <i class="icon ion-monitor"></i> Visit
+        <a class="tab-item" ng-click="preview()">
+          <i class="icon ion-monitor"></i> Preview
         </a>
-        <a href="#" class="tab-item">
+        <a class="tab-item">
           <i class="icon ion-chatbox"></i> Comment
         </a>
-        <a href="#" class="tab-item">
+        <a class="tab-item" ng-click="share()">
           <i class="icon ion-share"></i> Share
         </a>
       </ion-item>

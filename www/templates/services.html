@@ -1,0 +1,16 @@
+<ion-view view-title="Services - fauzie">
+  <ion-nav-title>
+    Services <span class="subtitle">services i can do for you</span>
+  </ion-nav-title>
+  <ion-content class="services padding">
+    <div class="list card" ng-repeat="service in services">
+      <div class="item text-center">
+        <h1>{{service.title}}</h1>
+      </div>
+      <div class="item item-body text-center">
+        <i class="icon {{service.icon}}" style="font-size:100px"></i>
+        <p>{{service.desc}}</p>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
