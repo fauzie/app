@@ -6,7 +6,7 @@
  * @package   fauzie.app
  */
 
-angular.module('fauzie', ['ionic', 'ion-gallery', 'ngCordova', 'fauzie.controllers', 'fauzie.services'])
+angular.module('fauzie', ['ionic', 'ionic.cloud', 'ion-gallery', 'ngCordova', 'fauzie.controllers', 'fauzie.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -24,6 +24,14 @@ angular.module('fauzie', ['ionic', 'ion-gallery', 'ngCordova', 'fauzie.controlle
   // Parse server configuration
   Parse.initialize('BdMzY3vrrS9UBbiDTLosrtFqK51RgiLW6vWVBMt0', '5aUFXETc530I9J0SuEAvK00tzF3PDMatooJIqYbq');
   Parse.serverURL = 'https://parseapi.back4app.com/';
+})
+
+.config(function($ionicCloudProvider) {
+  $ionicCloudProvider.init({
+    "core": {
+      "app_id": "e429caed"
+    }
+  });
 })
 
 .config(function(ionGalleryConfigProvider) {

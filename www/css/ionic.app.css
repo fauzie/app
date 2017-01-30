@@ -7823,7 +7823,7 @@ textarea[disabled],
 input[readonly]:not(.cloned-text-input),
 textarea[readonly]:not(.cloned-text-input),
 select[readonly] {
-  background-color: #222;
+  background-color: transparent;
   cursor: not-allowed; }
 
 input[type="radio"][disabled],
@@ -12309,6 +12309,14 @@ h1, h2, h3, h4, h5, h6,
   text-transform: uppercase;
   letter-spacing: 2px; }
 
+input[disabled],
+select[disabled],
+textarea[disabled],
+input[readonly]:not(.cloned-text-input),
+textarea[readonly]:not(.cloned-text-input),
+select[readonly] {
+  color: #c0c0c0; }
+
 .menu .scroll-content {
   background-color: #111;
   bottom: 70px; }
@@ -12473,6 +12481,20 @@ hr.primary {
   padding-bottom: 15px;
   font-size: 18px;
   font-weight: 600; }
+
+.bar .buttons-right .button-icon:before {
+  font-size: 26px;
+  color: rgba(206, 206, 206, 0.8); }
+
+.loginform .button .spinner {
+  position: relative;
+  margin-right: 10px; }
+  .loginform .button .spinner svg {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px !important;
+    height: 24px !important; }
 
 .gallery-view .image-container {
   position: relative;

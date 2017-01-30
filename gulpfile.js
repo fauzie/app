@@ -12,7 +12,8 @@ var sh = require('shelljs');
 
 var paths = {
   sass: ['./scss/**/*.scss'],
-  js: './www/js/'
+  js: './www/js/',
+  lib: './www/lib/js/'
 };
 
 gulp.task('default', ['sass', 'scripts']);
@@ -39,7 +40,7 @@ gulp.task('scripts', function(done) {
     .pipe(concat('plugins.min.js'))
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.js));
+    .pipe(gulp.dest(paths.lib));
   gulp.src([
     paths.js+'app.js',
     paths.js+'services.js',
@@ -49,7 +50,7 @@ gulp.task('scripts', function(done) {
     .pipe(concat('app.min.js'))
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.js))
+    .pipe(gulp.dest(paths.lib))
     .on('end', done);
 });
 

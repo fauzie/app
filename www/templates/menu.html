@@ -3,9 +3,12 @@
     <ion-nav-bar class="bar-stable">
       <ion-nav-back-button>
       </ion-nav-back-button>
-
       <ion-nav-buttons side="left">
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+      <ion-nav-buttons side="right">
+        <button class="button button-icon button-clear ion-android-person-add" menu-close ng-click="login()">
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>
@@ -38,7 +41,7 @@
       </ion-list>
     </ion-content>
     <ion-footer-bar class="bar-dark">
-      <button class="button button-block button-outline button-positive get-quote" menu-close ng-click="login()">Get Quote</button>
+      <button class="button button-block button-outline button-positive get-quote" menu-close>Get Quote</button>
     </ion-footer-bar>
   </ion-side-menu>
 </ion-side-menus>

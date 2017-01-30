@@ -8,17 +8,14 @@
 
 angular.module('fauzie.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicAuth, $ionicUser, $timeout) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
   // Form data for the login modal
   $scope.loginData = {};
+  $scope.isLoading = false;
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -30,6 +27,7 @@ angular.module('fauzie.controllers', [])
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
+    $scope.isLoading = false;
   };
 
   // Open the login modal
@@ -39,13 +37,12 @@ angular.module('fauzie.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
+    $scope.loginData = $scope.loginData || {};
+    $scope.isLoading = true;
+    // $ionicAuth.login('basic', $scope.loginData).then(function(){
+    //   $scope.closeLogin();
+    // });
+    
   };
 })
 
@@ -126,17 +123,37 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ServicesCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+.controller('ServicesCtrl', function($scope, $timeout, $ionicDB, $ionicAuth, $ionicUser, $ionicLoading, appParse) {
 
   $scope.services = [];
 
+  $ionicDB.connect();
+  var services = $ionicDB.collection('services');
+
+  var details = {
+    'name': 'Tester User',
+    'username': 'tester',
+    'email': 'hello@fauzie.my.id',
+    'password': 'bla123bla',
+    'image': 'http://res.cloudinary.com/fauzie/image/upload/personal/fauzie-ava.jpg',
+    'quotes': 0
+  };
+
+  // $ionicAuth.signup(details).then(function() {
+  //   return $ionicAuth.login('basic', {'email': 'hello@fauzie.my.id', 'password': 'bla123bla'}).then(function(){
+  //     console.log($ionicUser)
+  //   });
+  // });
+
   $ionicLoading.show()
   .then(function(){
-    appParse.fetch('Service', 'order', 'ASC')
-    .then(function(_data){
-      $ionicLoading.hide();
-      $timeout($scope.services = _data, 0);
-    });
+    services.order('order').fetch().subscribe(
+      function(docs){ 
+        $ionicLoading.hide();
+        $timeout($scope.services = docs, 0);
+      },
+      function(err) { console.error(err) }
+    );
   });
 
 })
