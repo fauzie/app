@@ -14,10 +14,10 @@ $dark:                            #111;
 $stable:                          #222;
 $positive:                        #fa023c;
 $calm:                            #ff7a99;
-$balanced:                        $positive;
+$balanced:                        #2adc00;
 $energized:                       $positive;
 $assertive:                       $positive;
-$royal:                           $positive;
+$royal:                           #000;
 
 // Content
 $scroll-refresh-icon-color:       #eee;
@@ -70,6 +70,15 @@ $item-default-active-border:      #222;
 
 $item-divider-bg:                 #191919;
 $item-divider-color:              #cecece;
+
+// Popup
+$popup-enter-animation-duration:  0.25s;
+$popup-leave-animation-duration:  0.15s;
+
+$popup-border-radius:             0px;
+$popup-button-border-radius:      0px;
+$popup-background-color:          rgba(0, 0, 0, 0.9);
+
 
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts";

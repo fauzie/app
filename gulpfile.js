@@ -13,7 +13,8 @@ var sh = require('shelljs');
 var paths = {
   sass: ['./scss/**/*.scss'],
   js: './www/js/',
-  lib: './www/lib/js/'
+  lib: './www/lib/js/',
+  bower: './www/lib/'
 };
 
 gulp.task('default', ['sass', 'scripts']);
@@ -33,6 +34,8 @@ gulp.task('sass', function(done) {
 
 gulp.task('scripts', function(done) {
   gulp.src([
+    paths.bower+'firebase/firebase.js',
+    paths.bower+'angularfire/dist/angularfire.min.js',
     paths.js+'gallery.min.js',
     paths.js+'ng-cordova.min.js'
     ])

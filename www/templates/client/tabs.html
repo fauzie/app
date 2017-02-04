@@ -1,0 +1,16 @@
+<ion-view view-title="Dashboard">
+  <ion-tabs class="tabs-royal tabs-color-positive tabs-icon-left">
+    <!-- Dashboard Tab -->
+    <ion-tab title="Dashboard" icon-off="ion-ios-speedometer-outline" icon-on="ion-ios-speedometer" ui-sref="app.client.dashboard">
+      <ion-nav-view name="client-dashboard"></ion-nav-view>
+    </ion-tab>
+    <!-- Quotes Tab -->
+    <ion-tab title="Quotes" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" ui-sref="app.client.quotes">
+      <ion-nav-view name="client-quotes"></ion-nav-view>
+    </ion-tab>
+    <!-- Settings Tab -->
+    <ion-tab title="Settings" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" ui-sref="app.client.settings">
+      <ion-nav-view name="client-settings"></ion-nav-view>
+    </ion-tab>
+  </ion-tabs>
+</ion-view>

@@ -8,14 +8,22 @@
 
 angular.module('fauzie.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicAuth, $ionicUser, $timeout) {
-
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+.controller('AppCtrl', function($scope, $state, $ionicModal, $timeout, addPopup, fireService) {
 
   // Form data for the login modal
-  $scope.loginData = {};
-  $scope.isLoading = false;
+  $scope.loginData  = {};
+  $scope.isLoading  = false;
+  $scope.isLoggedIn = false;
+  $scope.authObj    = fireService.Auth();
+
+  $scope.authObj.$onAuthStateChanged(function(firebaseUser) {
+    if (firebaseUser) {
+      $scope.loginData = firebaseUser;
+      $scope.isLoggedIn = true;
+    } else {
+      $scope.isLoggedIn = false;
+    }
+  });
 
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -32,17 +40,34 @@ angular.module('fauzie.controllers', [])
 
   // Open the login modal
   $scope.login = function() {
-    $scope.modal.show();
+    if ($rootScope.isLoggedIn) {
+      $state.go('app.client.dashboard');
+    } else {
+      $scope.modal.show();
+    }
   };
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    $scope.loginData = $scope.loginData || {};
+    if ($rootScope.isLoggedIn) {
+      $state.go('app.client.dashboard');
+      return;
+    }
+    $scope.loginData = $scope.loginData || {"email":"","password":""};
     $scope.isLoading = true;
-    // $ionicAuth.login('basic', $scope.loginData).then(function(){
-    //   $scope.closeLogin();
-    // });
-    
+    $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password).then(function(currentUser) {
+      console.log("Signed in as:", currentUser.uid);
+      $scope.closeLogin();
+      $rootScope.isLoggedIn = true;
+      $state.go('app.client.dashboard');
+    }).catch(function(error) {
+      $scope.isLoading = false;
+      addPopup.alert('Login Failed', error);
+    });
+  };
+
+  $scope.toggleMenu = function() {
+    $scope.sideMenuController.toggleLeft();
   };
 })
 
@@ -63,7 +88,7 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('GalleryCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+.controller('GalleryCtrl', function($scope, $timeout, $ionicLoading, addPopup, fireService) {
 
   $scope.items = [];
 
@@ -71,8 +96,9 @@ angular.module('fauzie.controllers', [])
     var results = [];
     angular.forEach(items, function(item){
       results.push({
-        sub: item.Title + ' (' + item.Year + ')',
-        src: item.Image.url
+        sub: item.title + ' (' + item.year + ')',
+        thumb: item.thumb,
+        src: item.image
       });
     });
     return results;
@@ -80,40 +106,52 @@ angular.module('fauzie.controllers', [])
 
   $ionicLoading.show()
   .then(function(){
-    appParse.fetch('Gallery', 'Year', 'ASC')
-    .then(function(_data){
+    fireService.getData('gallery', 'year')
+    .then(function(_data) {
       $ionicLoading.hide();
       $timeout($scope.items = parseGallery(_data), 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
     });
   });
 
 })
 
-.controller('ExpsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+.controller('ExpsCtrl', function($scope, $timeout, $ionicLoading, fireService, addPopup) {
 
   $scope.exps = [];
 
   $ionicLoading.show()
   .then(function(){
-    appParse.fetch('Experience', 'index', 'ASC')
-    .then(function(_data){
+    fireService.getData('experiences', 'date', 'DESC')
+    .then(function(_data) {
       $ionicLoading.hide();
       $timeout($scope.exps = _data, 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
     });
   });
 
 })
 
-.controller('SkillsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
+.controller('SkillsCtrl', function($scope, $timeout, $ionicLoading, fireService, addPopup) {
 
   $scope.skills = [];
 
   $ionicLoading.show()
   .then(function(){
-    appParse.fetch('Skill', 'type', 'DESC')
-    .then(function(_data){
+    fireService.getData('skills', 'type', 'DESC')
+    .then(function(_data) {
       $ionicLoading.hide();
       $timeout($scope.skills = _data, 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
     });
   });
 
@@ -123,57 +161,45 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ServicesCtrl', function($scope, $timeout, $ionicDB, $ionicAuth, $ionicUser, $ionicLoading, appParse) {
+.controller('ServicesCtrl', function($scope, $timeout, $ionicLoading, fireService, addPopup) {
 
   $scope.services = [];
 
-  $ionicDB.connect();
-  var services = $ionicDB.collection('services');
-
-  var details = {
-    'name': 'Tester User',
-    'username': 'tester',
-    'email': 'hello@fauzie.my.id',
-    'password': 'bla123bla',
-    'image': 'http://res.cloudinary.com/fauzie/image/upload/personal/fauzie-ava.jpg',
-    'quotes': 0
-  };
-
-  // $ionicAuth.signup(details).then(function() {
-  //   return $ionicAuth.login('basic', {'email': 'hello@fauzie.my.id', 'password': 'bla123bla'}).then(function(){
-  //     console.log($ionicUser)
-  //   });
-  // });
-
   $ionicLoading.show()
   .then(function(){
-    services.order('order').fetch().subscribe(
-      function(docs){ 
-        $ionicLoading.hide();
-        $timeout($scope.services = docs, 0);
-      },
-      function(err) { console.error(err) }
-    );
-  });
-
-})
-
-.controller('ProjectsCtrl', function($scope, $timeout, $ionicLoading, appParse) {
-
-  $scope.projects = [];
-
-  $ionicLoading.show()
-  .then(function(){
-    appParse.fetch('Project', 'year', 'DESC')
-    .then(function(_data){
+    fireService.getData('services', 'priority', 'DESC')
+    .then(function(_data) {
       $ionicLoading.hide();
-      $timeout($scope.projects = _data, 0);
+      $timeout($scope.services = _data, 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
     });
   });
 
 })
 
-.controller('ProjectCtrl', function($scope, $timeout, $stateParams, $ionicLoading, $cordovaSocialSharing, appParse) {
+.controller('ProjectsCtrl', function($scope, $timeout, $ionicLoading, fireService, addPopup) {
+
+  $scope.projects = [];
+
+  $ionicLoading.show()
+  .then(function(){
+    fireService.getData('projects', 'year', 'DESC')
+    .then(function(_data) {
+      $ionicLoading.hide();
+      $timeout($scope.projects = _data, 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
+    });
+  });
+
+})
+
+.controller('ProjectCtrl', function($scope, $timeout, $stateParams, $ionicLoading, $cordovaSocialSharing, fireService, addPopup) {
 
   $scope.data = [];
   $scope.id = $stateParams.projectId;
@@ -197,11 +223,64 @@ angular.module('fauzie.controllers', [])
 
   $ionicLoading.show()
   .then(function(){
-    appParse.get($scope.id, 'Project')
-    .then(function(item){
+    fireService.getItem('projects', $scope.id)
+    .then(function(_data) {
       $ionicLoading.hide();
-      $timeout($scope.data = item, 0);
+      $timeout($scope.data = _data, 0);
+    }).catch(function(error) {
+      console.error('Error', error);
+      addPopup.alert('Something Wrong!', 
+      'Please check your internet connection before continue.');
     });
+  });
+
+})
+
+  .controller('ClientCtrl', function ($scope, $state, $timeout, $ionicLoading, addPopup, fireService) {
+
+  /**
+   * Client Area
+   ============================================================ */
+
+  $scope.user = {};
+  $scope.authObj = fireService.Auth();
+  $scope.proPic = 'img/user_profile.png';
+  $scope.hasProPic = false;
+
+  $ionicLoading.show();
+  
+  $scope.authObj.$onAuthStateChanged(function (user) {
+    if (!user) {
+      $state.go('app.home');
+      return true;
+    }
+
+    if (user.photoURL !== null && user.photoURL.length) {
+      $scope.proPic = user.photoURL;
+      $scope.hasProPic = true;
+    }
+    
+    fireService.isUserDataExists(user.uid)
+    .then(function (check) {
+      if (check) {
+        var extraData = fireService.getUserData(user.uid);
+      } else {
+        var extraData = fireService.setDefaultUserData(user.uid);
+      }
+      extraData.then(function(_data) {
+        $ionicLoading.hide();
+        user.extraData = _data;
+        console.log(user);
+        $timeout($scope.user = user, 0);
+      });
+    })
+    .catch(function(err) {
+      $ionicLoading.hide();
+      console.error('Error', err);
+      addPopup.alert('Something Wrong!',
+        'Please check your internet connection before continue.');
+    });
+
   });
 
 });

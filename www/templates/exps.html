@@ -10,7 +10,7 @@
             <i class="{{exp.icon}} timelineIcon"></i>
           </div>
           <div class="cd-timeline-content">
-            <h5 class="heading">{{exp.date}} : {{exp.work}}</h5>
+            <h5 class="heading">{{exp.date | date:'MMM yyyy'}} : {{exp.work}}</h5>
             <p class="cd-author">{{exp.comp}}</p>
             <p class="timelineText">{{exp.desc}}</p>
           </div>

@@ -25,6 +25,13 @@ select[readonly] {
   color: #c0c0c0;
 }
 
+.popup-container {
+  background: rgba(0, 0, 0, 0.1);
+  .popup-head {
+    border-bottom-color: rgba(204, 204, 204, 0.15);
+  }
+}
+
 .menu {
   .scroll-content {
     background-color: #111;
@@ -35,6 +42,8 @@ select[readonly] {
     .button {
       font-size: 16px;
       line-height: 40px;
+      width: -webkit-calc(100% - 10px);
+      width: calc(100% - 10px);
     }
   }
 }
@@ -269,5 +278,53 @@ hr.primary {
         height: 24px !important;
       }
     }
+  }
+}
+
+// Client Area
+
+.profile-box {
+  display: block;
+  min-height: 100px;
+  h4 {
+    min-height: 20px;
+    margin-bottom: 30px;
+  }
+  .img-wrap {
+    background-color: #000;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-block;
+    height: 100px;
+    width: 100px;
+    margin: 30px auto 5px;
+    border-radius: 100px;
+    border: 6px solid #111;
+    box-shadow: 0 0 0px 5px #fa023c;
+    box-sizing: content-box;
+    position: relative;
+    z-index: 1;
+    .button {
+      display: block;
+      color: #fff;
+      position: absolute;
+      text-align: center;
+      font-size: 40px;
+      margin-top: -20px;
+      margin-left: -20px;
+      padding: 0;
+      height: 40px;
+      width: 40px;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+    }
+  }
+}
+
+.client-dashboard {
+  .item .badge {
+    right: 15px;
   }
 }

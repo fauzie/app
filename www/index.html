@@ -15,16 +15,24 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ionic.cloud.min.js"></script>
 
-    <!-- cordova/angularjs plugin js -->
+    <!-- cordova/ionic plugin js package (see gulpfile.js) -->
     <script src="lib/js/plugins.min.js"></script>
+
+    <script>
+      // Initialize the Firebase SDK
+      var fireConfig = {
+        apiKey: "AIzaSyCMMEsq4fhNyiCRHieiUZ45WKt9LfDQvVU",
+        authDomain: "fauzieapp.firebaseapp.com",
+        databaseURL: "https://fauzieapp.firebaseio.com/",
+        storageBucket: "fauzieapp.appspot.com",
+        messagingSenderId: "539288171364"
+      };
+      firebase.initializeApp(fireConfig);
+    </script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
-
-    <!-- Parse JS SDK -->
-    <script src="lib/parse.min.js"></script>
 
     <!-- your app's js -->
     <!--<script src="lib/js/app.min.js"></script>-->

@@ -8,7 +8,9 @@
         </button>
       </ion-nav-buttons>
       <ion-nav-buttons side="right">
-        <button class="button button-icon button-clear ion-android-person-add" menu-close ng-click="login()">
+        <button class="button button-icon button-clear ion-log-in" ng-click="login()" ng-hide="isLoggedIn">
+        </button>
+        <button class="button button-icon button-clear ion-ios-speedometer" ui-sref="app.client.dashboard" ng-show="isLoggedIn">
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>
@@ -26,22 +28,26 @@
         <ion-item menu-close href="#/about">
           About Me
         </ion-item>
+        <ion-item menu-close href="#/gallery">
+          Photo Gallery
+        </ion-item>
         <ion-item menu-close href="#/skills">
           My Skills
         </ion-item>
         <ion-item menu-close href="#/exps">
           Experiences
         </ion-item>
-        <ion-item menu-close href="#/services">
-          Services
-        </ion-item>
         <ion-item menu-close href="#/projects">
           Projects
+        </ion-item>
+        <ion-item menu-close href="#/services">
+          Services
         </ion-item>
       </ion-list>
     </ion-content>
     <ion-footer-bar class="bar-dark">
-      <button class="button button-block button-outline button-positive get-quote" menu-close>Get Quote</button>
+      <button class="button button-block button-outline button-positive get-quote" menu-close ng-hide="isLoggedIn">Get Quote</button>
+      <button class="button button-block button-outline button-positive get-quote" ui-sref="app.client.dashboard" menu-close ng-show="isLoggedIn">Dashboard</button>
     </ion-footer-bar>
   </ion-side-menu>
 </ion-side-menus>

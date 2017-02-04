@@ -6,9 +6,9 @@
     <ion-list class="projects">
       <ion-item 
       class="item-thumbnail-left" 
-      ng-repeat="(id, project) in projects" 
-      href="#/project/{{id}}">
-        <img ng-src="{{project.thumb | cloudImageURL}}">
+      ng-repeat="project in projects" 
+      href="#/project/{{project.$id}}">
+        <img ng-src="{{project.thumb}}">
         <h2>{{project.name}}</h2>
         <h4>{{project.cat}}</h4>
         <h6>{{project.year}}</h6>

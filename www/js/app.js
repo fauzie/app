@@ -6,9 +6,17 @@
  * @package   fauzie.app
  */
 
-angular.module('fauzie', ['ionic', 'ionic.cloud', 'ion-gallery', 'ngCordova', 'fauzie.controllers', 'fauzie.services'])
+angular.module('fauzie', [
+  'ionic',
+  'ion-gallery',
+  'firebase',
+  'ngCordova',
+  'fauzie.controllers',
+  'fauzie.services'
+])
 
-.run(function($ionicPlatform) {
+.run(function($rootScope, $state, $ionicPlatform, $ionicPopup, $ionicHistory) {
+
   $ionicPlatform.ready(function() {
 
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -20,18 +28,43 @@ angular.module('fauzie', ['ionic', 'ionic.cloud', 'ion-gallery', 'ngCordova', 'f
     if (window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    $ionicPlatform.registerBackButtonAction(function (event) {
+      event.preventDefault();
+      if ($state.current.name == "app.home") {
+        var confirmPopup = $ionicPopup.confirm({
+          title: 'Exit Fauzie App',
+          template: 'Are you sure want to exit app?'
+        });
+
+        confirmPopup.then(function (res) {
+          if (res) {
+            $ionicHistory.clearCache();
+            $ionicHistory.clearHistory();
+            window.localStorage.clear();
+            navigator.app.exitApp();
+          }
+        });
+      } else {
+        $ionicHistory.nextViewOptions({ disableBack: true });
+        $state.go('app.home');
+      }
+    }, 800);
+
+    $rootScope.$on("$routeChangeError", function (event, next, previous, error) {
+      if (error === "AUTH_REQUIRED") {
+        $state.go('app.home');
+      }
+    });
+
   });
-  // Parse server configuration
-  Parse.initialize('BdMzY3vrrS9UBbiDTLosrtFqK51RgiLW6vWVBMt0', '5aUFXETc530I9J0SuEAvK00tzF3PDMatooJIqYbq');
-  Parse.serverURL = 'https://parseapi.back4app.com/';
 })
 
-.config(function($ionicCloudProvider) {
-  $ionicCloudProvider.init({
-    "core": {
-      "app_id": "e429caed"
-    }
-  });
+.config(function($ionicConfigProvider) {
+  $ionicConfigProvider.views.maxCache(1);
+  $ionicConfigProvider.views.transition('ios');
+  $ionicConfigProvider.tabs.style('striped');
+  $ionicConfigProvider.tabs.position('bottom');
 })
 
 .config(function(ionGalleryConfigProvider) {
@@ -132,7 +165,49 @@ angular.module('fauzie', ['ionic', 'ionic.cloud', 'ion-gallery', 'ngCordova', 'f
         controller: 'ProjectCtrl'
       }
     }
+  })
+
+  // member Area
+  .state('app.client', {
+    url: '/client',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/client/tabs.html',
+        controller: 'ClientCtrl'
+      }
+    }
+  })
+
+  .state('app.client.dashboard', {
+    url: '/dashboard',
+    views: {
+      'client-dashboard': {
+        templateUrl: 'templates/client/dashboard.html',
+        //controller: 'ClientDashboardCtrl'
+      }
+    }
+  })
+
+  .state('app.client.quotes', {
+    url: '/quotes',
+    views: {
+      'client-quotes': {
+        templateUrl: 'templates/client/quotes.html',
+        //controller: 'ClientDashboardCtrl'
+      }
+    }
+  })
+  
+  .state('app.client.settings', {
+    url: '/settings',
+    views: {
+      'client-settings': {
+        templateUrl: 'templates/client/settings.html',
+        //controller: 'ClientDashboardCtrl'
+      }
+    }
   });
+
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/home');
 })
@@ -162,14 +237,6 @@ angular.module('fauzie', ['ionic', 'ionic.cloud', 'ion-gallery', 'ngCordova', 'f
 			$timeout(doDivide,0);
 		}
 	}
-})
-
-.filter('cloudImageURL', function () {
-  return function (img) {
-    if (img === undefined) return;
-    var result = img.toString();
-    return result.length ? 'http://res.cloudinary.com/fauzie/image/upload/'+result : '';
-  };
 })
 
 .filter('getDomain', function () {
