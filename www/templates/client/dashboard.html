@@ -2,7 +2,7 @@
   <ion-nav-buttons side="right"></ion-nav-buttons>
   <ion-content class="client-dashboard">
     <div class="profile-box text-center">
-      <div class="img-wrap" style="background-image:url({{proPic}})">
+      <div class="img-wrap" background-image-src="{{proPic}}">
         <button class="button button-clear button-icon ion-plus-round" ng-hide="hasProPic"></button>
       </div>
       <h4>{{user.displayName}}</h4>
@@ -12,13 +12,21 @@
         Account Details
       </ion-item>
       <ion-item class="item-icon-left">
+        <i class="icon ion-ios-timer"></i> Last Update
+        <span class="item-note">{{user.extraData.updated | relativeDate}}</span>
+      </ion-item>
+      <ion-item class="item-icon-left">
+        <i class="icon ion-ios-stopwatch"></i> Created At
+        <span class="item-note">{{user.extraData.created | date:'MMM d, yyyy H:m a'}}</span>
+      </ion-item>
+      <ion-item class="item-icon-left">
         <i class="icon ion-email"></i> E-Mail
         <span class="item-note">{{user.email}}</span>
       </ion-item>
-      <ion-item class="item-icon-left">
+      <a ui-sref="app.client.quotes" class="item item-icon-left">
         <i class="icon ion-ios-chatboxes"></i> My Quotes
         <span class="badge badge-assertive">{{user.extraData.quotes.length}}</span>
-      </ion-item>
+      </a>
     </ion-list>
   </ion-content>
 </ion-view>

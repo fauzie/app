@@ -1,6 +1,44 @@
 <ion-view view-title="Settings">
   <ion-nav-buttons side="right"></ion-nav-buttons>
   <ion-content>
-    <h1>Settings</h1>
+    <ion-list>
+      <ion-item class="item-divider item-icon-left">
+        <i class="icon ion-person"></i>
+        Account Settings
+      </ion-item>
+      <form name="accountForm" ng-submit="saveAccounts()" class="form-validate-wrap" autocomplete="off" _lpchecked="0" novalidate>
+        <ion-item class="item-input">
+          <span class="input-label">First Name</span>
+          <input type="text" ng-model="editData.firstname" ng-disabled="isSaving" ng-minlength="3" ng-maxlength="20" ng-required="true" form-validate>
+          <span class="field-validate"></span>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label">Last Name</span>
+          <input type="text" ng-model="editData.lastname" ng-disabled="isSaving" ng-maxlength="20" form-validate>
+          <span class="field-validate"></span>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label">Valid Email</span>
+          <input type="email" ng-model="editData.email" ng-disabled="isSaving" ng-minlength="6" ng-maxlength="50" ng-required="true" form-validate>
+          <span class="field-validate"></span>
+        </ion-item>
+        <ion-item class="item-input text-center form-submit">
+          <button class="button button-outline button-positive button-block" ng-disabled="isSaving" ng-class="saveClss">
+            <span class="default">SAVE</span>
+            <span class="saving"><ion-spinner icon="lines" class="icon spinner-positive"></ion-spinner> SAVING...</span>
+            <span class="saved"><i class="icon ion-android-checkmark-circle"></i> SAVED</span>
+          </button>
+        </ion-item>
+      </form>
+      <ion-item class="item-divider item-icon-left">
+        <i class="icon ion-android-unlock"></i> Password
+      </ion-item>
+      <ion-item class="item-button-right">
+        Change Password
+        <button class="button button-clear button-light" ng-click="newPassword()">
+          Reset
+        </button>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

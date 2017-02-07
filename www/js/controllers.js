@@ -236,7 +236,7 @@ angular.module('fauzie.controllers', [])
 
 })
 
-  .controller('ClientCtrl', function ($scope, $state, $timeout, $ionicLoading, addPopup, fireService) {
+.controller('ClientCtrl', function ($scope, $state, $timeout, $ionicLoading, $ionicPopup, addPopup, fireService) {
 
   /**
    * Client Area
@@ -259,7 +259,7 @@ angular.module('fauzie.controllers', [])
       $scope.proPic = user.photoURL;
       $scope.hasProPic = true;
     }
-    
+
     fireService.isUserDataExists(user.uid)
     .then(function (check) {
       if (check) {
@@ -270,7 +270,6 @@ angular.module('fauzie.controllers', [])
       extraData.then(function(_data) {
         $ionicLoading.hide();
         user.extraData = _data;
-        console.log(user);
         $timeout($scope.user = user, 0);
       });
     })
@@ -282,5 +281,57 @@ angular.module('fauzie.controllers', [])
     });
 
   });
+
+})
+
+.controller('ClientSettingsCtrl', function ($scope, $state, $q, $timeout, $ionicLoading, addPopup, fireService) {
+
+  $scope.isSaving = false;
+  $scope.saveClss = 'inner-default';
+  $scope.editData = $scope.user.extraData;
+
+  $scope.saveAccounts = function () {
+    $scope.isSaving = true;
+    $scope.saveClss = 'inner-saving';
+    var displayName = $scope.editData.firstname + ' ' + $scope.editData.lastname;
+
+    $q.all([
+      fireService.setUserEmail($scope.authObj, $scope.editData.email, $scope.reAuthPass),
+      $scope.user.updateProfile({ displayName: displayName }),
+    ]).then(function() {
+      $scope.editData.updated = new Date().toISOString();
+      $scope.editData.$save();
+    })
+    .finally(function() {
+      $timeout(function() {
+        $scope.editData.email = $scope.user.email;
+        $scope.user.extraData = $scope.editData;
+        $scope.isSaving = false;
+        $scope.saveClss = 'inner-saved';
+      }, 0);
+      $timeout(function () { $scope.saveClss = 'inner-default' }, 3000);
+    });
+  };
+
+  $scope.newPassword = function() {
+    $state.go('app.client.settings.password');
+  };
+
+})
+
+.controller('ClientPasswordCtrl', function ($scope, $state, $q, $timeout, addPopup, fireService) {
+
+  $scope.isSaving = false;
+  $scope.saveClss = 'inner-default';
+  $scope.password = { old: '', new: '', confirm: '' };
+
+  $scope.savePassword = function() {
+    $scope.isSaving = true;
+    $scope.saveClss = 'inner-saving';
+    $timeout(function () {
+      $scope.isSaving = false;
+      $scope.saveClss = 'inner-saved';
+    }, 3000);
+  };
 
 });

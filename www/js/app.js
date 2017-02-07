@@ -203,13 +203,34 @@ angular.module('fauzie', [
     views: {
       'client-settings': {
         templateUrl: 'templates/client/settings.html',
-        //controller: 'ClientDashboardCtrl'
+        controller: 'ClientSettingsCtrl'
+      }
+    }
+  })
+  
+  .state('app.client.settings.password', {
+    url: '/password',
+    views: {
+      'client-settings': {
+        templateUrl: 'templates/client/password.html',
+        controller: 'ClientPasswordCtrl'
       }
     }
   });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/home');
+})
+
+.directive('backgroundImageSrc', function () {
+  return function (scope, element, attrs) {
+    var src = attrs.backgroundImageSrc || false;
+    if (src) {
+      element.css({
+        'background-image': 'url(' + attrs.backgroundImageSrc + ')'
+      });
+    }
+  };
 })
 
 .directive('autoDivider', function($timeout) {  
@@ -237,6 +258,29 @@ angular.module('fauzie', [
 			$timeout(doDivide,0);
 		}
 	}
+})
+
+.directive('formValidate', function () {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, ctrl) {
+      var validateClass = 'form-validate';
+      ctrl.validate = false;
+      element.bind('focus', function (evt) {
+        if (ctrl.validate && ctrl.$invalid) {
+          element.addClass(validateClass);
+          scope.$apply(function () { ctrl.validate = true; });
+        } else {
+          element.removeClass(validateClass);
+          scope.$apply(function () { ctrl.validate = false; });
+        }
+      }).bind('blur', function (evt) {
+        element.addClass(validateClass);
+        scope.$apply(function () { ctrl.validate = true; });
+      });
+    }
+  };
 })
 
 .filter('getDomain', function () {

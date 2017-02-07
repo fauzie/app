@@ -12542,6 +12542,101 @@ hr.primary {
 .client-dashboard .item .badge {
   right: 15px; }
 
+.item-input {
+  position: relative; }
+  .item-input.form-submit {
+    padding-right: 16px;
+    position: relative; }
+    .item-input.form-submit .button {
+      margin: 8px 0;
+      z-index: 1; }
+
+.form-submit .button > span {
+  display: none;
+  margin-right: 5px; }
+
+.form-submit .button.inner-default > .default {
+  display: inline-block; }
+
+.form-submit .button.inner-saving > .saving {
+  display: inline-block; }
+
+.form-submit .button.inner-saved > .saved {
+  display: inline-block; }
+
+.form-submit .button .spinner {
+  display: inline-block;
+  position: relative; }
+  .form-submit .button .spinner svg {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    width: 28px !important;
+    height: 28px !important; }
+
+.popup-body input {
+  background-color: transparent;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #444;
+  margin: 5px auto;
+  padding: 5px 10px; }
+
+.reauth-prompt .popup-body > span {
+  display: block;
+  font-size: 90%;
+  margin-bottom: 15px; }
+
+.form-validate-wrap.ng-invalid .form-submit:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; }
+
+.form-validate-wrap.ng-invalid .form-submit .button {
+  opacity: .4; }
+
+.form-validate {
+  background: transparent; }
+  .form-validate + .field-validate {
+    display: block;
+    width: 30px;
+    height: 30px;
+    opacity: 1;
+    text-align: center;
+    position: absolute;
+    top: 13px;
+    right: 3px;
+    z-index: -1; }
+  .form-validate:focus + .field-validate {
+    opacity: 0; }
+  .form-validate + .field-validate:after {
+    content: "";
+    display: inline-block;
+    font-family: "Ionicons";
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    text-rendering: auto;
+    line-height: 1;
+    font-size: 22px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; }
+  .form-validate.ng-empty + .field-validate:after {
+    content: "\f101";
+    color: #999; }
+  .form-validate.ng-invalid + .field-validate:after {
+    content: "\f128";
+    color: #fa023c; }
+  .form-validate.ng-valid + .field-validate:after {
+    content: "\f120";
+    color: #2adc00; }
+
 .gallery-view .image-container {
   position: relative;
   overflow: hidden;

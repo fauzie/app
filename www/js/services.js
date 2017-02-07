@@ -12,17 +12,9 @@ angular.module('fauzie.services', [])
 
   var deviceID = (typeof window.device === 'undefined') ? 'Browser' : $cordovaDevice.getUUID();
 
-  var User = $firebaseObject.$extend({
-    getCreated: function() {
-      return new Date(this.created).toLocaleString();
-    },
-    getupdated: function() {
-      return new Date(this.updated).toLocaleString();
-    }
-  });
-
   return {
     items: [],
+    userData: {},
     Auth: function () {
       return $firebaseAuth();
     },
@@ -31,6 +23,9 @@ angular.module('fauzie.services', [])
       var userRref = firebase.database().ref('users');
       var userData = $firebaseObject(userRref);
       userData[userId] = {
+        firstname: '',
+        lastname: '',
+        email: '',
         quotes: [0],
         created: new Date().toISOString(),
         updated: new Date().toISOString()
@@ -51,48 +46,53 @@ angular.module('fauzie.services', [])
     getUserData: function (userId) {
       var defer = $q.defer();
       var userRref = firebase.database().ref('users').child(userId);
-      var userData = new User(userRref);
+      var userData = $firebaseObject(userRref);
 
       userData.$loaded().then(function(data) {
+        this.userData = data;
         defer.resolve(data);
       }).catch(function(error) {
         defer.reject(error);
       });
       return defer.promise;
     },
-    setUserData: function (userData) {
-      
-      if (!angular.isObject(userData)) {
-        userData = {};
-      }
+    setUserEmail: function (userObj, newEmail, reAuthPass) {
 
       var defer = $q.defer()
-      , userAuth = $firebaseAuth().$getAuth()
-      , currentUserData;
+        , userData = userObj.$getAuth();
 
-      if (!userAuth) {
-        addPopup.alert('Update Failed', 'Please login before continue.');
-        defer.reject();
+      if (userData.email == newEmail) {
+        defer.resolve(userObj);
         return defer.promise;
       }
 
-      currentUserData = this.getUserData(userAuth.uid);
-
-      if (currentUserData.length < 1 || userData.length < 1) {
-        currentUserData.quotes = [];
-        currentUserData.created = new Date().toISOString();
-        currentUserData.updated = new Date().toISOString();
-      } else {
-        currentUserData = angular.merge(currentUserData, userData);
-      }
-      
-      currentUserData.$save().then(function(ref) {
-        if (ref.key == currentUserData.$id) {
-          var newData = this.getUserData(userAuth.uid);
-          defer.resolve(newData);
-        } else {
+      var showReAuth = function (pass) {
+        var credential = firebase.auth.EmailAuthProvider.credential(userData.email, pass);
+        userObj.$signInWithCredential(credential)
+        .then(function(fireUser) {
+          userObj.$updateEmail(newEmail)
+          .then(function () { defer.resolve(userObj) })
+          .catch(function (error) {
+            addPopup.alert('Email Update Failed', error);
+            defer.reject();
+          });
+        })
+        .catch(function(err) {
+          addPopup.alert('Re-Auth Failed', err.message);
           defer.reject();
-        }
+        });
+      };
+
+      addPopup.prompt({
+        title: 'Password Check',
+        cssClass: 'reauth-prompt',
+        template: 'To change your primary email address, please re-enter your account password:',
+        inputType: 'password',
+        inputPlaceholder: 'Your password...'
+      }).then(showReAuth)
+      .catch(function(err) {
+        addPopup.alert('Password Check Failed', err.message);
+        defer.reject();
       });
 
       return defer.promise;
@@ -152,10 +152,6 @@ angular.module('fauzie.services', [])
         results.reject(err);
       });
       return results.promise;
-    },
-    user: function(userId) {
-      var userRef = firebase.database().ref().child("users").child(userId);
-      return new User(userRef);
     }
   }
 })
@@ -163,6 +159,9 @@ angular.module('fauzie.services', [])
 .factory('addPopup', function($ionicPopup, $timeout) {
   
   return {
+    show: function(params) {
+      return $ionicPopup.show(params);
+    },
     alert: function(title, content) {
       var alertPopup = $ionicPopup.alert({
         title: title,
@@ -177,15 +176,93 @@ angular.module('fauzie.services', [])
       });
       return confirmPopup;
     },
-    prompt: function(title, content, input, placeholder) {
-      var promptPopup = $ionicPopup.prompt({
-        title: title,
-        template: '<div class="text-center">'+content+'</div>',
-        inputType: input || 'text',
-        inputPlaceholder: placeholder || ''
-      });
-      return promptPopup;
+    prompt: function (params) {
+      return $ionicPopup.prompt(params);
     }
   }
 
+})
+
+.provider('relativeDateFilter', function () {
+  var self = this;
+  self.conversions = {
+    now: 1,
+    second: 1000,
+    minute: 60,
+    hour: 60,
+    day: 24
+  };
+  self.labelText = {
+    now: 'now',
+    before_second: {
+      'one': '%n second ago',
+      'more': '%n seconds ago'
+    },
+    before_minute: {
+      'one': '%n minute ago',
+      'more': '%n minutes ago'
+    },
+    before_hour: {
+      'one': '%n hour ago',
+      'more': '%n hours ago'
+    },
+    before_day: {
+      'one': '%n day ago',
+      'more': '%n days ago'
+    },
+    after_second: {
+      'one': '%n second left',
+      'more': '%n seconds left'
+    },
+    after_minute: {
+      'one': '%n minute left',
+      'more': '%n minutes left'
+    },
+    after_hour: {
+      'one': '%n hour left',
+      'more': '%n hours left'
+    },
+    after_day: {
+      'one': '%n day left',
+      'more': '%n days left'
+    }
+  };
+  self.datePattern = 'yyyy-MM-dd';
+  self.defaultFormat = function (unit_key, delta, relativeTime) {
+    return unit_key === 'day' && delta > 0;
+  };
+  var getText = function (key) {
+    var labelKey = key;
+    return self.labelText[labelKey];
+  }, localize = function (delta, unit_key) {
+    if (unit_key !== 'now') {
+      var prefix = 'before_';
+      if (delta < 0) {
+        prefix = 'after_';
+      }
+      unit_key = prefix + unit_key;
+    }
+    var label = getText(unit_key), unit = angular.isString(label) ? label : delta == 1 ? label.one : label.more;
+    return unit.replace('%n', Math.abs(delta));
+  };
+  this.$get = [
+    'dateFilter',
+    function (dateFilter) {
+      return function (date) {
+        var now = new Date(), relativeTime = new Date(date), delta = now - relativeTime, unit_key = 'now', key;
+        var conversions = self.conversions;
+        for (key in conversions) {
+          if (Math.abs(delta) < conversions[key]) {
+            break;
+          }
+          unit_key = key;
+          delta = delta / conversions[key];
+        }
+        if (self.defaultFormat(unit_key, delta, relativeTime)) {
+          return dateFilter(relativeTime, self.datePattern);
+        }
+        return localize(Math.floor(delta), unit_key);
+      };
+    }
+  ];
 });
