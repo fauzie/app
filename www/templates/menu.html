@@ -7,12 +7,7 @@
         <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
         </button>
       </ion-nav-buttons>
-      <ion-nav-buttons side="right">
-        <button class="button button-icon button-clear ion-log-in" ng-click="login()" ng-hide="isLoggedIn">
-        </button>
-        <button class="button button-icon button-clear ion-ios-speedometer" ui-sref="app.client.dashboard" ng-show="isLoggedIn">
-        </button>
-      </ion-nav-buttons>
+      <ion-nav-buttons side="right"></ion-nav-buttons>
     </ion-nav-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
@@ -46,7 +41,7 @@
       </ion-list>
     </ion-content>
     <ion-footer-bar class="bar-dark">
-      <button class="button button-block button-outline button-positive get-quote" menu-close ng-hide="isLoggedIn">Get Quote</button>
+      <button class="button button-block button-outline button-positive get-quote" menu-close ng-hide="isLoggedIn" ng-click="login()">Log in</button>
       <button class="button button-block button-outline button-positive get-quote" ui-sref="app.client.dashboard" menu-close ng-show="isLoggedIn">Dashboard</button>
     </ion-footer-bar>
   </ion-side-menu>

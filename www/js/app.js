@@ -206,16 +206,6 @@ angular.module('fauzie', [
         controller: 'ClientSettingsCtrl'
       }
     }
-  })
-  
-  .state('app.client.settings.password', {
-    url: '/password',
-    views: {
-      'client-settings': {
-        templateUrl: 'templates/client/password.html',
-        controller: 'ClientPasswordCtrl'
-      }
-    }
   });
 
   // if none of the above states are matched, use this as the fallback

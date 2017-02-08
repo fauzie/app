@@ -40,7 +40,7 @@ angular.module('fauzie.controllers', [])
 
   // Open the login modal
   $scope.login = function() {
-    if ($rootScope.isLoggedIn) {
+    if ($scope.isLoggedIn) {
       $state.go('app.client.dashboard');
     } else {
       $scope.modal.show();
@@ -49,7 +49,7 @@ angular.module('fauzie.controllers', [])
 
   // Perform the login action when the user submits the login form
   $scope.doLogin = function() {
-    if ($rootScope.isLoggedIn) {
+    if ($scope.isLoggedIn) {
       $state.go('app.client.dashboard');
       return;
     }
@@ -58,7 +58,7 @@ angular.module('fauzie.controllers', [])
     $scope.authObj.$signInWithEmailAndPassword($scope.loginData.email, $scope.loginData.password).then(function(currentUser) {
       console.log("Signed in as:", currentUser.uid);
       $scope.closeLogin();
-      $rootScope.isLoggedIn = true;
+      $scope.isLoggedIn = true;
       $state.go('app.client.dashboard');
     }).catch(function(error) {
       $scope.isLoading = false;
@@ -284,11 +284,12 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ClientSettingsCtrl', function ($scope, $state, $q, $timeout, $ionicLoading, addPopup, fireService) {
+.controller('ClientSettingsCtrl', function ($scope, $state, $q, $timeout, $ionicLoading, $ionicModal, addPopup, fireService) {
 
   $scope.isSaving = false;
   $scope.saveClss = 'inner-default';
-  $scope.editData = $scope.user.extraData;
+  $scope.password = { old: '', new: '', confirm: '' };
+  $timeout($scope.editData = $scope.user.extraData, 0);
 
   $scope.saveAccounts = function () {
     $scope.isSaving = true;
@@ -313,25 +314,49 @@ angular.module('fauzie.controllers', [])
     });
   };
 
-  $scope.newPassword = function() {
-    $state.go('app.client.settings.password');
-  };
-
-})
-
-.controller('ClientPasswordCtrl', function ($scope, $state, $q, $timeout, addPopup, fireService) {
-
-  $scope.isSaving = false;
-  $scope.saveClss = 'inner-default';
-  $scope.password = { old: '', new: '', confirm: '' };
-
-  $scope.savePassword = function() {
+  $scope.savePassword = function () {
     $scope.isSaving = true;
     $scope.saveClss = 'inner-saving';
-    $timeout(function () {
+
+    var credential = firebase.auth.EmailAuthProvider.credential($scope.user.email, $scope.password.old);
+    var loadChange = $scope.authObj.$signInWithCredential(credential)
+    .then(function(fireUser) {
+      $scope.authObj.$updatePassword($scope.password.new)
+      .then(function () {
+        $scope.saveClss = 'inner-saved';
+        $timeout($scope.hidePassword, 900);
+      })
+      .catch(function (error) {
+        $scope.saveClss = 'inner-default';
+        addPopup.alert('Change Password Failed', error);
+      })
+      .finally(function () {
+        $scope.isSaving = false;
+      });
+    })
+    .catch(function(err) {
       $scope.isSaving = false;
-      $scope.saveClss = 'inner-saved';
-    }, 3000);
+      $scope.saveClss = 'inner-default';
+      addPopup.alert('Change Password Failed', err);
+    });
+
+    return loadChange;
+  };
+
+  $ionicModal.fromTemplateUrl('templates/client/password.html', {
+    scope: $scope
+  }).then(function (modal) {
+    $scope.passModal = modal;
+  });
+
+  $scope.showPassword = function() {
+    $scope.passModal.show();
+  };
+
+  $scope.hidePassword = function () {
+    $scope.passModal.hide();
+    $scope.isSaving = false;
+    $scope.saveClss = 'inner-default';
   };
 
 });
