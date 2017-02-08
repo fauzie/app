@@ -1,5 +1,7 @@
 <ion-view view-title="Settings">
-  <ion-nav-buttons side="right"></ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-small button-positive button-icon ion-log-out" ng-click="authObj.$signOut()"></button>
+  </ion-nav-buttons>
   <ion-content>
     <ion-list>
       <ion-item class="item-divider item-icon-left">

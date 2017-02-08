@@ -251,6 +251,7 @@ angular.module('fauzie.controllers', [])
   
   $scope.authObj.$onAuthStateChanged(function (user) {
     if (!user) {
+      $scope.user = {};
       $state.go('app.home');
       return true;
     }

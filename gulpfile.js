@@ -37,7 +37,8 @@ gulp.task('scripts', function(done) {
     paths.bower+'firebase/firebase.js',
     paths.bower+'angularfire/dist/angularfire.min.js',
     paths.js+'gallery.min.js',
-    paths.js+'ng-cordova.min.js'
+    paths.js+'ng-cordova.min.js',
+    paths.js+'irk.js'
     ])
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(concat('plugins.min.js'))

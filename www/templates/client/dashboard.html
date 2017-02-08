@@ -1,5 +1,7 @@
 <ion-view view-title="Dashboard">
-  <ion-nav-buttons side="right"></ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-small button-positive button-icon ion-log-out" ng-click="authObj.$signOut()"></button>
+  </ion-nav-buttons>
   <ion-content class="client-dashboard">
     <div class="profile-box text-center">
       <div class="img-wrap" background-image-src="{{proPic}}">
