@@ -14,3 +14,37 @@
     </ion-tab>
   </ion-tabs>
 </ion-view>
+
+<script id="templates/popover.html" type="text/ng-template">
+  <div class="platform-ios fauzie-popover">
+    <ion-popover-view>
+      <ion-content>
+        <div class="list">
+          <a class="item" ui-sref="app.client.settings" ng-click="popover.hide($event)">
+            <i class="icon ion-ios-gear"></i>&nbsp;&nbsp;Settings
+          </a>
+          <a class="item" ng-click="authObj.$signOut()">
+            <i class="icon ion-log-out"></i>&nbsp;&nbsp;Log Out
+          </a>
+        </div>
+      </ion-content>
+    </ion-popover-view>
+  </div>
+</script>
+
+<script id="templates/quote-popover.html" type="text/ng-template">
+  <div class="platform-ios fauzie-popover">
+    <ion-popover-view>
+      <ion-content>
+        <div class="list">
+          <a class="item" ng-click="popover.hide($event); openChat()">
+            <i class="icon ion-android-chat"></i>&nbsp;&nbsp;Project Chat
+          </a>
+          <a class="item" ng-click="popover.hide($event); removeQuote()">
+            <i class="icon ion-trash-a"></i>&nbsp;&nbsp;Remove Project
+          </a>
+        </div>
+      </ion-content>
+    </ion-popover-view>
+  </div>
+</script>

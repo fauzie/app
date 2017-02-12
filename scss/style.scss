@@ -25,6 +25,45 @@ select[readonly] {
   color: #c0c0c0;
 }
 
+
+.platform-android {
+
+  .backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .loading-container .loading {
+    background-color: transparent;
+    span {
+      color: $base-color;
+    }
+  }
+
+  .action-sheet-backdrop.active {
+    background-color: fade($royal, 50%);
+  }
+
+  .action-sheet-group {
+    background-color: $royal;
+  }
+
+  .action-sheet {
+
+    .button.destructive {
+      &:hover {
+        color: $light;
+      }
+    }
+
+    .button.active,
+    .button.activated {
+      background: $dark;
+    }
+
+  }
+
+}
+
 .padding-2x {
   padding: 20px;
   &-top {
@@ -298,6 +337,24 @@ hr.primary {
 
 // Client Area
 
+.icon-refreshing .spinner svg {
+  fill: $positive;
+  stroke: $positive;
+}
+
+.list-inset {
+  background-color: $base-background-color;
+  box-shadow: 0 1px 10px rgba($dark, 0.2);
+  .item:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  .item:last-child {
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+}
+
 .profile-box {
   display: block;
   min-height: 100px;
@@ -346,6 +403,14 @@ hr.primary {
 
 .item-input {
   position: relative;
+
+  textarea {
+    background-color: transparent;
+
+    &focus {
+      background-color: $dark;
+    }
+  }
 }
 
 .form-submit {
@@ -462,5 +527,186 @@ hr.primary {
   &.ng-valid + .field-validate:after {
     content: "\f120";
     color: #2adc00;
+  }
+}
+
+
+// Radio Checked
+.item-radio input {
+  &:checked + .radio-content .item-content {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Form Label Separator
+.label-separator .input-label:after {
+  content: "\003A";
+  float: right;
+}
+
+// Quotes
+.icon.quote-icon {
+  &.ecommerce:before {
+    content: "\f3f8";
+  }
+  &.portfolio:before {
+    content: "\f3e4";
+  }
+  &.service:before {
+    content: "\f13e";
+  }
+  &.community:before {
+    content: "\f47c";
+  }
+}
+
+// Popover
+.fauzie-popover {
+  .popover {
+    background-color: $stable;
+    border-color: $dark;
+    border-radius: 10px;
+    margin-top: 0;
+    height: auto;
+    width: 160px;
+    .popover-arrow:after {
+      background-color: $stable;
+    }
+    .scroll-content {
+      position: relative;
+      border-radius: 10px;
+      .item {
+        background-color: $stable;
+        border: none;
+        color: $light;
+        padding: 10px 15px;
+      }
+    }
+    .list {
+      > .item:first-child {
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+      }
+      > .item:last-child {
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+    }
+  }
+}
+
+
+// Chat Modal
+.messaging-view {
+  .bar.bar-header .title {
+    line-height: 40px !important;
+    .subtitle {
+      color: $base-color;
+      display: block;
+      position: absolute;
+      margin: 0;
+      left: 0;
+      bottom: 5px;
+    }
+  }
+  .scroll {
+    background-color: $base-background-color;
+    padding: 10px 5px;
+  }
+  .bar.item-input-inset .item-input-wrapper,
+  & .bar.item-input-inset .item-input-wrapper input {
+    background-color: $stable;
+  }
+  .avatar img {
+    border: 2px solid $base-background-color;
+    border-radius: 40px;
+    box-sizing: content-box;
+    width: 36px;
+    height: auto;
+  }
+  .messages {
+    display: block;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .message {
+      display: block;
+      padding: 0 10px;
+      padding-left: 40px;
+      -webkit-transition: all 250ms ease-in-out;
+      transition: all 250ms ease-in-out;
+      overflow: hidden;
+      text-align: left;
+      width: 100%;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+    }
+    .user.avatar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 5px 5px 5px 0;
+      img {
+        border: 0;
+        width: 30px;
+      }
+    }
+  }
+  .time {
+    font-size: 80%;
+    float: left;
+    padding: 0 10px;
+    padding-left: 40px;
+    opacity: 0;
+    -webkit-transition: all .15s ease-in-out;
+    transition: all .15s ease-in-out;
+    -webkit-transform: translateY(-10px);
+    transform: translateY(-10px);
+    &.showed {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+      transform: translateY(0);
+    }
+  }
+  .messages {
+    span {
+      background: $positive;
+      display: inline-block;
+      color: $light;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: left;
+      max-width: 240px;
+    }
+  }
+  .messages.mychat {
+    .message {
+      padding-left: 0;
+      padding-right: 40px;
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      text-align: right;
+      span {
+        color: $base-color;
+        background-color: $stable;
+      }
+    }
+    .time {
+      float: right;
+      padding-left: 0;
+      padding-right: 40px;
+    }
+    .user.avatar {
+      left: auto;
+      right: 0;
+      margin: 5px 0 5px 5px;
+    }
   }
 }

@@ -18,30 +18,21 @@ angular.module('fauzie.services', [])
     Auth: function () {
       return $firebaseAuth();
     },
-    setDefaultUserData: function (userId) {
+    setUserData: function (userId, data) {
       var defer = $q.defer();
-      var userRref = firebase.database().ref('users');
-      var userData = $firebaseObject(userRref);
-      userData[userId] = {
-        firstname: '',
-        lastname: '',
-        email: '',
-        quotes: [0],
-        created: new Date().toISOString(),
-        updated: new Date().toISOString()
-      };
-      userData.$save().then(function (ref) {
-        defer.resolve(userData[userId]);
-      }).catch(function (err) {
-        defer.reject(err);
-      });
-      return defer.promise;
-    },
-    isUserDataExists: function (userId) {
       var userRref = firebase.database().ref('users').child(userId);
-      return userRref.once('value').then(function (snapshot) {
-        return snapshot.exists();
+      var userData = $firebaseObject(userRref);
+
+      userData.$loaded().then(function() {
+        angular.merge(userData, data);
+        userData.$save().then(function (ref) {
+          defer.resolve(userData);
+        }).catch(function (err) {
+          defer.reject(err.message);
+        });
       });
+
+      return defer.promise;
     },
     getUserData: function (userId) {
       var defer = $q.defer();
@@ -52,7 +43,7 @@ angular.module('fauzie.services', [])
         this.userData = data;
         defer.resolve(data);
       }).catch(function(error) {
-        defer.reject(error);
+        defer.reject(error.message);
       });
       return defer.promise;
     },
@@ -74,7 +65,7 @@ angular.module('fauzie.services', [])
           .then(function () { defer.resolve(userObj) })
           .catch(function (error) {
             addPopup.alert('Email Update Failed', error);
-            defer.reject();
+            defer.reject(error.message);
           });
         })
         .catch(function(err) {
@@ -123,7 +114,7 @@ angular.module('fauzie.services', [])
         this.items = data;
         results.resolve(data);
       }, function(err){
-        results.reject(err);
+        results.reject(err.message);
       });
       return results.promise;
     },
@@ -149,9 +140,84 @@ angular.module('fauzie.services', [])
       query.$loaded(function(data) {
         results.resolve(data);
       }, function(err) {
-        results.reject(err);
+        results.reject(err.message);
       });
       return results.promise;
+    },
+    getQuotes: function(userId) {
+      var q = $q.defer();
+      var ref = firebase.database().ref('quotes').child(userId);
+      var quotes = $firebaseObject(ref);
+
+      quotes.$loaded(function(res) {
+        q.resolve(res);
+      }, function(err) {
+        q.reject(err.message);
+      });
+      return q.promise;
+    },
+    getQuote: function(quoteId) {
+      var q = $q.defer();
+      var user  = $firebaseAuth().$getAuth().uid;
+      var ref   = firebase.database().ref('quotes/'+user).child(quoteId);
+      var quote = $firebaseObject(ref);
+
+      quote.$loaded(function(res) {
+        q.resolve(res);
+      }, function(err) {
+        q.reject(err.message);
+      });
+      return q.promise;
+    },
+    addQuote: function(userId, data) {
+      var q = $q.defer();
+      var ref = firebase.database().ref('quotes').child(userId);
+      var quotes = $firebaseArray(ref);
+      
+      quotes.$add(data).then(function(ref) {
+        q.resolve(ref.key);
+      }).catch(function(err) {
+        q.reject(err.message);
+      });
+
+      return q.promise;
+    },
+    setUserQuote: function(userId, quoteId) {
+      var q = $q.defer();
+      var ref = firebase.database().ref('users').child(userId);
+      var userData = $firebaseObject(ref);
+
+      userData.$loaded(function() {
+        userData.quotes.push(quoteId);
+        userData.$save().then(function(ref) {
+          q.resolve(ref.key);
+        }).catch(function(err) {
+          q.reject(err.message);
+        });
+      });
+
+      return q.promise;
+    },
+    rmQuote: function(quoteId) {
+      var q = $q.defer();
+      var user  = $firebaseAuth().$getAuth().uid;
+      var ref   = firebase.database().ref('quotes/'+user).child(quoteId);
+      var usref = firebase.database().ref('users/'+user).child('quotes');
+      var quote = $firebaseObject(ref);
+      var user  = $firebaseArray(usref);
+
+      quote.$remove().then(function(res) {
+        user.$loaded(function() {
+          console.log('userQuotes',user);
+          var index = user.$getRecord(quoteId);
+          user.$remove(index).then(function() {
+            q.resolve(quoteId);
+          });
+        });
+      }).catch(function(err) {
+        q.reject(err.message);
+      });
+      return q.promise;
     }
   }
 })

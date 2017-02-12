@@ -22,7 +22,7 @@
   display: table !important;
   width: 100% !important;
   height: 100% !important;
-  margin-top: -50px !important;
+  padding-top: 50px !important;
 
   &-content {
     display: table-cell;
@@ -56,11 +56,36 @@
   height: 100%;
   top: 0 !important;
   left: 0 !important;
+
+  .bar-header {
+    border-color: $positive;
+    background-color: $base-background-color;
+    color: $light;
+
+    .title {
+      padding-left: 30px;
+    }
+  }
+
 }
 
 .irk-slider {
   width: 100% !important;
   height: 100% !important;
+
+  h5 {
+    font-size: 1.4rem;
+  }
+  
+  .col {
+    .irk-icon-large {
+      margin-top: 1rem;
+      margin-bottom: .5rem;
+    }
+    .irk-icon-large:before {
+      font-size: 3.5rem;
+    }
+  }
 
   &-slide {
     padding-top: 80px;
@@ -71,30 +96,38 @@
 
 }
 
-.irk-bottom {
+.irk-modal .irk-bottom {
 
   &-bar {
+    background-color: transparent;
     background-image: none !important;
+    border-color: transparent;
     display: block;
     height: 85px;
 
     &-consent {
-      height: 60px !important;
-      padding-bottom: 18px !important;
+      border-color: transparent;
+      height: 60px;
+      padding-bottom: 18px;
     }
 
     &-consent-agree {
-      height: 44px !important;
+      border-color: transparent;
+      height: 44px;
     }
   }
 
   &-button {
-    margin-top: 0px !important;
-    margin-bottom: 5px !important;
+    margin-top: 0px;
+    margin-bottom: 5px;
     margin-left: auto;
     margin-right: auto;
-    width: 90% !important;
-    font-size: 17px !important;
+    width: 90%;
+    font-size: 17px;
+
+    &.irk-button-step-skip {
+      font-size: 13px;
+    }
   }
 
 }

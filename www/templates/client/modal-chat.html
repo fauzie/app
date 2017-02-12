@@ -1,0 +1,32 @@
+<ion-modal-view class="messaging-view">
+  <ion-header-bar  no-tap-scroll="true">
+    <div class="buttons avatar">
+      <img src="img/fauzie-ava.jpg" alt="">
+    </div>
+    <h1 class="title">
+      {{quote.project}} Discussions<span class="subtitle">With: Rizal Fauzie (admin)</span>
+    </h1>
+    <div class="buttons">
+      <button class="button icon ion-close-round" ng-click="closeChat()"></button>
+    </div>
+  </ion-header-bar>
+
+  <ion-content ng-click="hideTime = !hideTime">
+    <div ng-repeat="message in messages" ng-class="{mychat: message.userId == myId}" class="messages">
+      <div class="user avatar">
+        <img src="img/fauzie-ava.jpg" alt="">
+      </div>
+      <div class="message">
+        <span>{{ message.text }}</span>
+      </div>
+      <div class="time" ng-class="{'':hideTime, 'showed':!hideTime}">{{message.time}}</div>
+    </div>
+  </ion-content>
+
+  <ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
+    <label class="item-input-wrapper">
+      <input chat-input type="text" placeholder="Type your message" on-return="sendMessage()" ng-model="chat.message" on-focus="inputUp()" on-blur="inputDown()" />
+    </label>
+    <button class="button button-clear" ng-click="sendMessage()">Send</button>
+  </ion-footer-bar>
+</ion-modal-view>

@@ -8,7 +8,7 @@
 
 angular.module('fauzie.controllers', [])
 
-.controller('AppCtrl', function($scope, $state, $ionicModal, $timeout, addPopup, fireService) {
+.controller('AppCtrl', function($scope, $state, $q, $ionicModal, $timeout, $ionicLoading, addPopup, fireService, irkResults) {
 
   // Form data for the login modal
   $scope.loginData  = {};
@@ -66,16 +66,94 @@ angular.module('fauzie.controllers', [])
     });
   };
 
+  // Toggle Side Menu
   $scope.toggleMenu = function() {
     $scope.sideMenuController.toggleLeft();
   };
+
+  // Create Get Quote Modal
+  $ionicModal.fromTemplateUrl('templates/quote.html', {
+    scope: $scope
+  }).then(function (modal) {
+    $scope.quote = modal;
+  });
+
+  // Open Get Quote Modal
+  $scope.getQuote = function() {
+    $scope.quote.show();
+  };
+
+  // Save user and quote data then close modal
+  $scope.closeModal = function() {
+    var quoteResults = irkResults.getResults(), uEmail, uPasswd;
+
+    if (quoteResults.canceled) {
+      $scope.quote.hide();
+      return true;
+    }
+    
+    var quoteData = [];
+    var newUserData = [];
+    var todayMt = new Date().getTime();
+
+    quoteData['created'] = todayMt;
+    newUserData['created'] = todayMt;
+    newUserData['updated'] = todayMt;
+
+    $ionicLoading.show();
+    quoteResults.childResults.forEach(function(field) {
+      if (field.id === 'intro' || field.id === 'ending') {
+        return;
+      }
+      if (field.id === 'account') {
+        uEmail = field.answer.email;
+        uPasswd = field.answer.password;
+        newUserData['email'] = uEmail;
+        quoteData['email'] = uEmail;
+      } else 
+      if (field.id === 'name') {
+        newUserData['firstname'] = answer;
+      } else
+      if (field.id === 'mobile') {
+        var answer = field.answer || '';
+        newUserData['mobile'] = answer;
+      }
+      else {
+        var answer = field.answer || '';
+        quoteData[ field.id ] = answer;
+      }
+    });
+
+    $scope.authObj.$createUserWithEmailAndPassword(uEmail, uPasswd)
+    .then(function (newUser) {
+      console.log(newUser);
+      var userId = newUser.uid;
+      newUser.updateProfile({ displayName: quoteData.name });
+      $scope.isLoggedIn = true;
+
+      fireService.addQuote(userId, quoteData)
+      .then(function(quoteId) {
+        newUserData['quotes'] = [ quoteId ];
+        fireService.setUserData(userId, newUserData)
+        .then(function(er) {
+          $ionicLoading.hide();
+          $scope.quote.hide();
+          $state.go('app.client.dashboard');
+        });
+      });
+      
+    }).catch(function(err) {
+      $ionicLoading.hide();
+      addPopup.alert('Quote Request Failed', err);
+    });    
+  };
+
 })
 
 .controller('HomeCtrl', function($scope, $state, $ionicNavBarDelegate, $timeout) {
 
   $scope.about = function () {
     $state.go('app.about');
-    window.location.reload();
   }
 
   $scope.logoclass = 'transparent';
@@ -236,13 +314,15 @@ angular.module('fauzie.controllers', [])
 
 })
 
-.controller('ClientCtrl', function ($scope, $state, $timeout, $ionicLoading, $ionicPopup, addPopup, fireService) {
+.controller('ClientCtrl', function ($scope, $state, $timeout, $ionicLoading, $ionicPopup, $ionicPopover, addPopup, fireService) {
 
   /**
    * Client Area
    ============================================================ */
 
+  $scope.myId = 0;
   $scope.user = {};
+  $scope.quotes = {};
   $scope.authObj = fireService.Auth();
   $scope.proPic = 'img/user_profile.png';
   $scope.hasProPic = false;
@@ -252,36 +332,216 @@ angular.module('fauzie.controllers', [])
   $scope.authObj.$onAuthStateChanged(function (user) {
     if (!user) {
       $scope.user = {};
-      $state.go('app.home');
+      $state.go('app.home')
+      .then(function() {
+        $scope.login();
+      });
       return true;
     }
 
+    $scope.myId = user.uid;
     if (user.photoURL !== null && user.photoURL.length) {
       $scope.proPic = user.photoURL;
       $scope.hasProPic = true;
     }
 
-    fireService.isUserDataExists(user.uid)
-    .then(function (check) {
-      if (check) {
-        var extraData = fireService.getUserData(user.uid);
-      } else {
-        var extraData = fireService.setDefaultUserData(user.uid);
-      }
-      extraData.then(function(_data) {
-        $ionicLoading.hide();
-        user.extraData = _data;
-        $timeout($scope.user = user, 0);
+    fireService.getUserData(user.uid).then(function(extraData) {
+      user.extraData = extraData;
+      $timeout($scope.user = user, 0);
+
+      fireService.getQuotes(user.uid).then(function(quotes) {
+        $timeout($scope.quotes = quotes, 0);
       });
-    })
-    .catch(function(err) {
-      $ionicLoading.hide();
+
+    }).catch(function(err) {
       console.error('Error', err);
       addPopup.alert('Something Wrong!',
         'Please check your internet connection before continue.');
+    }).finally(function() {
+      $ionicLoading.hide();
     });
 
   });
+
+  $ionicPopover.fromTemplateUrl('templates/popover.html', {
+    scope: $scope,
+  }).then(function(popover) {
+    $scope.popover = popover;
+  });
+
+})
+
+.controller('ClientQuotesCtrl', function ($scope, $q, $timeout, $ionicLoading, $ionicModal, addPopup, fireService, irkResults) {
+
+  $scope.doRefresh = function() {
+    fireService.getQuotes($scope.user.uid)
+    .then(function(result) {
+      $timeout($scope.quotes = result, 0);
+    }).catch(function() {
+      addPopup.alert('Failed to Load Quotes', 'Please check your internet connection before continue.');
+    }).finally(function() {
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
+
+  $scope.isFuture = function (time) {
+    var today = new Date().getTime();
+    var thetime = new Date(time).getTime();
+    return (thetime >= today);
+  };
+
+  // Create Get Quote Modal
+  $ionicModal.fromTemplateUrl('templates/client/quote-form.html', {
+    scope: $scope
+  }).then(function (modal) {
+    $scope.quoteModal = modal;
+  });
+
+  // Save user and quote data then close modal
+  $scope.closeModal = function() {
+    var quoteResults = irkResults.getResults();
+    console.log('quoteResults', quoteResults);
+
+    if (quoteResults.canceled) {
+      $scope.quoteModal.hide();
+      return true;
+    }
+
+    var quoteData = [];
+    quoteData['created'] = new Date().getTime();
+
+    $ionicLoading.show();
+    quoteResults.childResults.forEach(function(field) {
+      if (field.id === 'intro' || field.id === 'ending') {
+        return;
+      }
+      var answer = field.answer || '';
+      quoteData[ field.id ] = answer;
+    });
+    
+    fireService.addQuote($scope.user.uid, quoteData)
+    .then(function(quoteId) {
+      fireService.setUserQuote($scope.user.uid, quoteId)
+      .then(function(res) {
+        $scope.doRefresh();
+      })
+    }).catch(function(err) {
+      addPopup.alert('Add Quote Failed', err);
+    }).finally(function() {
+      $ionicLoading.hide();
+      $scope.quoteModal.hide();
+    });
+
+  };
+
+})
+
+.controller('ClientQuoteCtrl', function ($scope, $timeout, $state, $stateParams, $ionicLoading, $ionicModal, $ionicPopover, $ionicScrollDelegate, addPopup, fireService) {
+
+  $scope.quote = {};
+  $scope.id = $stateParams.quoteId;
+
+  $scope.chat = {};
+  $scope.messages = [];
+  $scope.hideTime = true;
+
+  $ionicLoading.show().then(function() {
+    fireService.getQuote($scope.id).then(function(result) {
+      $timeout($scope.quote = result, 0);
+    }).catch(function(err) {
+      addPopup.alert('Failed to Fetch Project', err);
+    }).finally(function() {
+      $ionicLoading.hide();
+    });
+  });
+
+  $scope.doRefresh = function() {
+    fireService.getQuote($scope.id)
+    .then(function(result) {
+      $timeout($scope.quote = result, 0);
+    }).catch(function(err) {
+      addPopup.alert('Failed to Fetch Project', err);
+    }).finally(function() {
+      $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
+
+  $ionicPopover.fromTemplateUrl('templates/quote-popover.html', {
+    scope: $scope,
+  }).then(function(popover) {
+    $scope.popover = popover;
+  });
+
+  $scope.removeQuote = function() {
+    $scope.popover.hide();
+    var confirmRemove = addPopup.confirm(
+      'Confirm to Remove Quote',
+      'Are you sure you want to remove this quote? All chat and related data will be removed too!'
+    );
+    confirmRemove.then(function(isYes) {
+      if (isYes) {
+        $ionicLoading.show();
+        fireService.rmQuote($scope.id)
+        .then(function() {
+          $ionicLoading.hide();
+          $state.go('app.client.quotes');
+        }).catch(function(err) {
+          addPopup.alert('Failed to Remove Quote', err);
+        });
+      }
+    });
+  };
+
+  // Chat Scope
+  var alternate = true;
+  // Create the chat modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/client/modal-chat.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.chatModal = modal;
+  });
+
+  // Triggered in the chat modal to close it
+  $scope.closeChat = function() {
+    $scope.chatModal.hide();
+  };
+
+  // Open the chat modal
+  $scope.openChat = function() {
+    $scope.chatModal.show();
+  };
+
+  $scope.sendMessage = function() {
+    alternate = !alternate;
+
+    var d = new Date();
+    d = d.toLocaleTimeString().replace(/:\d+ /, ' ');
+
+    $scope.messages.push({
+      userId: alternate ? $scope.myId : 'admin',
+      text: $scope.chat.message,
+      time: d
+    });
+    console.log($scope.messages);
+    delete $scope.chat.message;
+    $ionicScrollDelegate.scrollBottom(true);
+  };
+
+  $scope.inputUp = function() {
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      window.cordova.plugins.Keyboard.open();
+    }
+    $timeout(function() {
+      $ionicScrollDelegate.scrollBottom(true);
+    }, 300);
+  };
+
+  $scope.inputDown = function() {
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      window.cordova.plugins.Keyboard.close();
+    }
+    $ionicScrollDelegate.resize();
+  };
 
 })
 
@@ -290,6 +550,7 @@ angular.module('fauzie.controllers', [])
   $scope.isSaving = false;
   $scope.saveClss = 'inner-default';
   $scope.password = { old: '', new: '', confirm: '' };
+  $scope.mobileRegEx = "^+?\d{1,3}?[- .]?(?(?:\d{2,3}))?[- .]?\d\d\d[- .]?\d\d\d\d$";
   $timeout($scope.editData = $scope.user.extraData, 0);
 
   $scope.saveAccounts = function () {

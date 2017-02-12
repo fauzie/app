@@ -1,0 +1,61 @@
+<ion-modal-view class="irk-modal">
+
+  <irk-ordered-tasks>
+
+    <irk-task>
+      <irk-instruction-step id="intro" title="Project Worksheet" text="Completing this form will help me understand your project requirements. This will also serve as a website planner to walk your through the process of articulating your needs. Please just skip any questions that you don’t feel are relevant to this project." />
+    </irk-task>
+
+    <irk-task>
+      <irk-text-question-step id="project" title="Name Your Project" text="Add your project, brand, or website name here." multiple-lines="false" optional="false" />
+    </irk-task>
+
+    <irk-task>
+      <irk-text-question-step id="website" title="Do you have a domain name registered?" text="If so, what is it? Just leave empty if this a new project" multiple-lines="false" />
+    </irk-task>
+
+    <irk-task>
+      <irk-numeric-question-step id="budget" title="What is the budget range for this project?" text="An idea of your budget will help me adapt my approach to respects your constraints." unit="USD" optional="false" />
+    </irk-task>
+
+    <irk-task>
+      <irk-date-question-step id="duedate" title="A date when the project needs to be completed?" text="e.g.: art opening, product launch, year-end budget" />
+    </irk-task>
+
+    <irk-task>
+      <irk-image-choice-question-step id="purpose" title="What's your priority for your website?" text="This will help us know what kind of service you need" optional="false" auto-complete="true">
+        <irk-image-choice text="Sell Things" value="ecommerce" normal-state-image="ion-ios-cart-outline" selected-state-image="ion-ios-cart"></irk-image-choice>
+        <irk-image-choice text="Become Famous" value="portfolio" normal-state-image="ion-ios-body-outline" selected-state-image="ion-ios-body"></irk-image-choice>
+        <irk-image-choice text="Provide Facilities" value="service" normal-state-image="ion-ios-gear-outline" selected-state-image="ion-ios-gear"></irk-image-choice>
+        <irk-image-choice text="Gatherer Communities" value="community" normal-state-image="ion-ios-people-outline" selected-state-image="ion-ios-people"></irk-image-choice>
+      </irk-image-choice-question-step>
+    </irk-task>
+
+    <irk-task>
+      <irk-text-choice-question-step id="audience" title="Visitor type you wish to coming to your site?" text="Select one or more different types of visitors to your website." style="multiple">
+        <irk-text-choice text="Offline User" value="offline"></irk-text-choice>
+        <irk-text-choice text="Online User" value="online"></irk-text-choice>
+        <irk-text-choice text="Mobile User" value="mobile"></irk-text-choice>
+        <irk-text-choice text="Social Media User" value="socials"></irk-text-choice>
+      </irk-text-choice-question-step>
+    </irk-task>
+
+    <irk-task>
+      <irk-boolean-question-step id="seo" title="Is SEO a important objective for your website project?" text="Search Engine Optimization - i.e. ranking well in Google" true-text="Yes" false-text="No" optional="false" auto-complete="true" />
+    </irk-task>
+
+    <irk-task>
+      <irk-text-question-step id="influenz" title="List websites that have a look and feel that appeals to you?" text="List sites URL that describe what you like about the look and feel of the site" />
+    </irk-task>
+
+    <irk-task>
+      <irk-text-question-step id="imagine" title="Describe how you imagine your website" text="When you look at the design of websites in general" />
+    </irk-task>
+
+    <irk-task>
+      <irk-instruction-step id="ending" title="Review Your Quotes" text="Thanks for your quote, make sure all fields is relevant with your project requirments. After this, an email with your quote details will sent to me, as soon as possible i will contact you." button-text="Done and Send" />
+    </irk-task>
+
+  </irk-ordered-tasks>
+
+</ion-modal-view>

@@ -1,0 +1,42 @@
+<ion-view>
+  <ion-nav-title>{{quote.project}} Project</ion-nav-title>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-small button-white button-icon ion-more" ng-click="popover.show($event)"></button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-refresher spinner="android" pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+    <div class="list list-inset label-separator">
+      <div class="item item-divider">
+        Project Details
+      </div>
+      <div class="item item-input">
+        <span class="input-label">Due Date</span>
+        <span>{{quote.duedate | relativeDate}}</span>
+      </div>
+      <div class="item item-input">
+        <span class="input-label">Created at</span>
+        <span>{{quote.created | relativeDate}}</span>
+      </div>
+      <div class="item item-input">
+        <span class="input-label">Type</span>
+        <span>{{quote.purpose}}</span>
+      </div>
+      <div class="item item-input">
+        <span class="input-label">Website</span>
+        <span>{{quote.website}}</span>
+      </div>
+      <div class="item item-input">
+        <span class="input-label">Audience</span>
+        <span>{{quote.audience.join(', ')}}</span>
+      </div>
+    </div>
+    <div class="list list-inset chat-lists">
+      <div class="item item-divider item-button-right">
+        Latest Messages
+        <button class="button button-clear button-positive" ng-click="openChat()">
+          <i class="icon ion-android-chat"></i>
+        </button>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

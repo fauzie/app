@@ -1,8 +1,20 @@
-<ion-view view-title="My Quotes">
+<ion-view>
+  <ion-nav-title>Quotes</ion-nav-title>
   <ion-nav-buttons side="right">
-    <button class="button button-clear button-small button-positive button-icon ion-log-out" ng-click="authObj.$signOut()"></button>
+    <button class="button button-clear button-small button-white button-icon ion-more" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <ion-content>
-    <h1>My Quotes</h1>
+    <ion-refresher spinner="android" pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+    <ion-list>
+      <ion-item class="item-divider item-button-right">
+        Your Project Quotes
+        <button class="button button-clear button-small icon-right ion-plus-round button-positive" ng-click="quoteModal.show()">&nbsp;New</button>
+      </ion-item>
+      <ion-item class="item-icon-left" ng-repeat="(id, quote) in quotes" ui-sref="app.client.quote({quoteId:id})">
+        <i class="icon quote-icon {{quote.purpose}} ion-code-working"></i>
+        <h2>Project : {{quote.project}}</h2>
+        <p><small ng-class="{balanced: isFuture(quote.duedate), positive: !isFuture(quote.duedate)}">Duedate {{quote.duedate | relativeDate}}</small></p>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

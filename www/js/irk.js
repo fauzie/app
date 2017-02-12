@@ -342,7 +342,7 @@ angular.module('ionicResearchKit',[])
                     {
                         // Show the action sheet
                         var hideSheet = $ionicActionSheet.show({
-                            destructiveText: (ionic.Platform.isAndroid()?'<i class="icon ion-android-exit assertive"></i> ':'')+'End Task',
+                            destructiveText: (ionic.Platform.isAndroid()?'<i class="icon ion-android-exit assertive"></i> ':'')+'Are You want to quit?',
                             cancelText: 'Cancel',
                             cancel: function() {
                                 hideSheet();
@@ -523,7 +523,7 @@ angular.module('ionicResearchKit',[])
                 //This is called to capture the results
                 $scope.doSave = function() {
                     irkResults.addResult(slider.currentIndex(), $scope.formData);
-                }; 
+                };
 
                 $scope.$on("slideBox.slideChanged", function(e, index) {
                     $scope.doSave();
@@ -547,18 +547,18 @@ angular.module('ionicResearchKit',[])
                 '<div class="slider-slides irk-slider-slides" ng-transclude>'+
                 '</div>'+
                 //FOOTER BAR FOR SURVEY STEPS
-                '<ion-footer-bar class="irk-bottom-bar" keyboard-attach irk-survey-bar>'+
+                '<ion-footer-bar class="irk-bottom-bar bar-dark" keyboard-attach irk-survey-bar>'+
                 '<div>'+
                 '<a class="button button-block button-outline button-positive irk-bottom-button irk-button-step-next" ng-click="doStepNext()" irk-step-next>Next</a>'+
                 '<a class="button button-block button-clear button-positive irk-bottom-button irk-button-step-skip" ng-click="doSkip()" irk-step-skip>Skip this question</a>'+
                 '</div>'+
                 '</ion-footer-bar>'+
                 //FOOTER BAR FOR CONSENT STEPS
-                '<ion-footer-bar class="irk-bottom-bar irk-bottom-bar-consent" keyboard-attach irk-consent-bar>'+
+                '<ion-footer-bar class="irk-bottom-bar irk-bottom-bar-consent bar-dark" keyboard-attach irk-consent-bar>'+
                 '<button class="button button-block button-outline button-positive irk-bottom-button irk-button-step-next" ng-click="doStepNext()" irk-step-next>Next</button>'+
                 '</ion-footer-bar>'+
                 //FOOTER BAR FOR CONSENT REVIEW
-                '<ion-footer-bar class="irk-bottom-bar irk-bottom-bar-consent-agree bar-stable" irk-consent-bar-agree>'+
+                '<ion-footer-bar class="irk-bottom-bar irk-bottom-bar-consent-agree bar-dark" irk-consent-bar-agree>'+
                 '<div class="buttons">'+
                 '<button class="button button-clear button-positive irk-button-consent-disagree" ng-click="doDisagree()">Disagree</button>'+
                 '</div>'+
@@ -1915,7 +1915,7 @@ angular.module('ionicResearchKit',[])
                     '<button class="button button-outline button-positive irk-audio-button irk-button-audio-play icon ion-play" ng-click="playAudio()" ng-disabled="!audioSample"></button>'+
                     '</div>'+
                     '</div>'+
-                    '<ion-footer-bar class="irk-bottom-bar" keyboard-attach irk-audio-bar>'+
+                    '<ion-footer-bar class="irk-bottom-bar bar-dark" keyboard-attach irk-audio-bar>'+
                     '<div>'+
                     ((attr.autoComplete && attr.autoComplete=="false")?'<a class="button button-block button-outline button-positive irk-bottom-button irk-button-step-next" ng-click="$parent.doNext()" ng-disabled="!audioSample || audioActive">Next</a>':'')+
                     ((attr.optional && attr.optional=="true")?'<a class="button button-block button-clear button-positive irk-bottom-button irk-button-step-skip" ng-click="$parent.doSkip()" ng-disabled="audioSample || audioActive">Skip this task</a>':'')+

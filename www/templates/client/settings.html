@@ -1,6 +1,6 @@
 <ion-view view-title="Settings">
   <ion-nav-buttons side="right">
-    <button class="button button-clear button-small button-positive button-icon ion-log-out" ng-click="authObj.$signOut()"></button>
+    <button class="button button-clear button-small button-white button-icon ion-more" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
@@ -17,6 +17,11 @@
         <ion-item class="item-input item-floating-label">
           <span class="input-label">Last Name</span>
           <input type="text" placeholder="Last Name" ng-model="editData.lastname" ng-disabled="isSaving" ng-maxlength="20" form-validate>
+          <span class="field-validate"></span>
+        </ion-item>
+        <ion-item class="item-input item-floating-label">
+          <span class="input-label">Mobile Number*</span>
+          <input type="text" placeholder="Mobile Number*" ng-model="editData.mobile" ng-disabled="isSaving" ng-maxlength="16" ng-required="true" form-validate>
           <span class="field-validate"></span>
         </ion-item>
         <ion-item class="item-input item-floating-label">

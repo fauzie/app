@@ -11,6 +11,8 @@ angular.module('fauzie', [
   'ion-gallery',
   'firebase',
   'ngCordova',
+  'checklist-model',
+  'ionicResearchKit',
   'fauzie.controllers',
   'fauzie.services'
 ])
@@ -58,6 +60,10 @@ angular.module('fauzie', [
     });
 
   });
+})
+
+.constant('$ionicLoadingConfig', {
+  template: '<ion-spinner icon="crescent" class="spinner-positive"></ion-spinner><br><span>Please Wait...</span>'
 })
 
 .config(function($ionicConfigProvider) {
@@ -193,7 +199,17 @@ angular.module('fauzie', [
     views: {
       'client-quotes': {
         templateUrl: 'templates/client/quotes.html',
-        //controller: 'ClientDashboardCtrl'
+        controller: 'ClientQuotesCtrl'
+      }
+    }
+  })
+
+  .state('app.client.quote', {
+    url: '/quote/:quoteId',
+    views: {
+      'client-quotes': {
+        templateUrl: 'templates/client/quote.html',
+        controller: 'ClientQuoteCtrl'
       }
     }
   })
@@ -223,7 +239,7 @@ angular.module('fauzie', [
   };
 })
 
-.directive('autoDivider', function($timeout) {  
+.directive('autoDivider', function($timeout) {
 	var lastDivideKey = "";
 
 	return {
@@ -271,6 +287,44 @@ angular.module('fauzie', [
       });
     }
   };
+})
+
+.directive('chatInput', function($timeout) {
+  return {
+    restrict: 'A',
+    scope: {
+      'returnClose': '=',
+      'onReturn': '&',
+      'onFocus': '&',
+      'onBlur': '&'
+    },
+    link: function(scope, element, attr) {
+      element.bind('focus', function(e) {
+        if (scope.onFocus) {
+          $timeout(function() {
+            scope.onFocus();
+          });
+        }
+      });
+      element.bind('blur', function(e) {
+        if (scope.onBlur) {
+          $timeout(function() {
+            scope.onBlur();
+          });
+        }
+      });
+      element.bind('keydown', function(e) {
+        if (e.which == 13) {
+          if (scope.returnClose) element[0].blur();
+          if (scope.onReturn) {
+            $timeout(function() {
+              scope.onReturn();
+            });
+          }
+        }
+      });
+    }
+  }
 })
 
 .filter('getDomain', function () {
