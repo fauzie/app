@@ -1,42 +1,70 @@
-<ion-view>
+<ion-view view-title="Project Quote Details">
   <ion-nav-title>{{quote.project}} Project</ion-nav-title>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-ios-arrow-back" ng-click="goBack()"></button>
+  </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button class="button button-clear button-small button-white button-icon ion-more" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
-  <ion-content>
+  <ion-content class="quotelist single">
     <ion-refresher spinner="android" pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
     <div class="list list-inset label-separator">
-      <div class="item item-divider">
+      <div class="item item-divider item-button-right">
         Project Details
+        <button class="button button-clear button-positive" ng-click="editQuote()">
+          <i class="icon ion-edit"></i>
+        </button>
       </div>
-      <div class="item item-input">
-        <span class="input-label">Due Date</span>
-        <span>{{quote.duedate | relativeDate}}</span>
+      <div class="item">
+        Status <i class="icon positive ion-help-circled"></i>
+        <span class="badge" ng-class="statusClass(quote.status)">{{quote.status | toSpace | uppercase}}</span>
       </div>
-      <div class="item item-input">
-        <span class="input-label">Created at</span>
-        <span>{{quote.created | relativeDate}}</span>
+      <div class="item">
+        Created
+        <span class="item-note">{{quote.created | relativeDate}}</span>
       </div>
-      <div class="item item-input">
-        <span class="input-label">Type</span>
-        <span>{{quote.purpose}}</span>
+      <div class="item">
+        Due Date
+        <span class="item-note">{{quote.duedate | relativeDate}}</span>
       </div>
-      <div class="item item-input">
-        <span class="input-label">Website</span>
-        <span>{{quote.website}}</span>
+      <div class="item">
+        Project for
+        <span class="item-note">{{quote.purpose | getPurpose}}</span>
       </div>
-      <div class="item item-input">
-        <span class="input-label">Audience</span>
-        <span>{{quote.audience.join(', ')}}</span>
+      <div class="item">
+        Website
+        <span class="item-note">{{quote.website}}</span>
+      </div>
+      <div class="item">
+        SEO Optimization
+        <span class="item-note text-right" ng-bind="quote.seo=='true'?'Yes':'No'"></span>
+      </div>
+      <div class="item" ng-show="quote.influenz.length">
+        Web Reference
+        <span class="item-note text-right" ng-bind-html="quote.influenz | nl2br"></span>
+      </div>
+      <div class="item" ng-show="quote.audience.length">
+        Audience
+        <span class="item-note text-right" ng-bind-html="quote.audience | getAudienceList | nl2br"></span>
+      </div>
+      <div class="item" ng-show="quote.imagine.length">
+        Additional Notes
+        <p ng-bind-html="quote.imagine | nl2br" style="white-space:normal"></p>
       </div>
     </div>
     <div class="list list-inset chat-lists">
       <div class="item item-divider item-button-right">
         Latest Messages
-        <button class="button button-clear button-positive" ng-click="openChat()">
+        <button class="button button-clear button-positive" ng-click="chatModal.show()">
           <i class="icon ion-android-chat"></i>
         </button>
       </div>
+      <div class="item item-avatar message" ng-repeat="message in messages | orderBy: '-' | limitTo: 2" ng-class="{mychat: message.userId == myId}">
+        <img ng-src="{{getAvatar(message.userId)}}" alt="">
+        <h2>{{message.userId == myId ? user.displayName : 'Administrator'}}</h2>
+        <p>{{message.text}}</p>
+      </div>
     </div>
+    <br>
   </ion-content>
 </ion-view>

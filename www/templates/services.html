@@ -2,8 +2,12 @@
   <ion-nav-title>
     Services <span class="subtitle">services i can do for you</span>
   </ion-nav-title>
-  <ion-content class="services padding">
-    <div class="list card" ng-repeat="service in services">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="services padding" in-view-container>
+    <div class="list card faded" ng-repeat="service in services" in-view="onVisible($inview, $inviewInfo)">
       <div class="item text-center">
         <h1>{{service.title}}</h1>
       </div>

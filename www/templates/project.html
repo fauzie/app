@@ -1,5 +1,8 @@
 <ion-view>
-  <ion-nav-title>{{data.year}} - {{data.name}}</ion-nav-title>
+  <ion-nav-title>{{data.name}}</ion-nav-title>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-ios-arrow-back" ng-click="goBack()"></button>
+  </ion-nav-buttons>
   <ion-content class="padding">
     <ion-list class="card">
       <ion-item class="item-image">

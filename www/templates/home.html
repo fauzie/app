@@ -2,11 +2,15 @@
   <ion-nav-title class="homepage">
     <img src="img/fauzie-logo.png" alt="fauzie logo" height="20" />
   </ion-nav-title>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+  </ion-nav-buttons>
   <ion-content padding="true" scroll="false">
     <div class="row row-center row-full-height">
       <div class="col col-center">
-        <img src="img/fauzie.png" class="img-fluid {{logoclass}}" alt=""><br>
-        <a class="button button-outline button-stable btn-home-about {{imgclass}}" ng-click="about()">More Abou Me</a>
+        <img src="img/fauzie.png" class="img-fluid" ng-class="logoclass" alt=""><br>
+        <a class="button button-outline button-stable btn-home-about" ng-class="imgclass" ng-hide="isLoggedIn" ng-click="$state.go('app.about')">About Me</a>
+        <a class="button button-outline button-stable btn-home-about" ng-class="imgclass" ng-show="isLoggedIn" ng-click="goDashboard()">Dashboard</a>
       </div>
     </div>
   </ion-content>

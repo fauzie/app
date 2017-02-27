@@ -3,9 +3,11 @@
     <button class="button button-clear button-small button-white button-icon ion-more" ng-click="popover.show($event)"></button>
   </ion-nav-buttons>
   <ion-content class="client-dashboard">
+    <ion-refresher spinner="android" pulling-text="Pull to refresh..." on-refresh="refreshDashboard()"></ion-refresher>
     <div class="profile-box text-center">
-      <div class="img-wrap" background-image-src="{{proPic}}">
-        <button class="button button-clear button-icon ion-plus-round" ng-hide="hasProPic"></button>
+      <div class="img-wrap">
+        <img id="proPic" ng-src="{{proPic}}" alt="">
+        <button class="button button-clear button-icon ion-plus-round" ng-click="showAvatarMenu()" ng-show="proPic == 'img/user_profile.png'"></button>
       </div>
       <h4>{{user.displayName}}</h4>
     </div>
@@ -18,8 +20,8 @@
         <span class="item-note">{{user.extraData.updated | relativeDate}}</span>
       </ion-item>
       <ion-item class="item-icon-left">
-        <i class="icon ion-ios-stopwatch"></i> Created At
-        <span class="item-note">{{user.extraData.created | date:'MMM d, yyyy H:m a'}}</span>
+        <i class="icon ion-ios-stopwatch"></i> Created 
+        <span class="item-note">{{user.extraData.created | relativeDate}}</span>
       </ion-item>
       <ion-item class="item-icon-left">
         <i class="icon ion-email"></i> E-Mail
@@ -27,7 +29,7 @@
       </ion-item>
       <a ui-sref="app.client.quotes" class="item item-icon-left">
         <i class="icon ion-ios-chatboxes"></i> My Quotes
-        <span class="badge badge-assertive">{{user.extraData.quotes.length}}</span>
+        <span class="badge badge-positive">{{user.extraData.quotes.length}}</span>
       </a>
     </ion-list>
   </ion-content>

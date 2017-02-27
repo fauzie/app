@@ -33,30 +33,38 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('scripts', function(done) {
+
   gulp.src([
     paths.bower+'firebase/firebase.js',
+    paths.bower+'moment/min/moment.min.js',
     paths.bower+'angularfire/dist/angularfire.min.js',
-    paths.js+'gallery.min.js',
-    paths.js+'ng-cordova.min.js',
-    paths.js+'checklist-model.js',
+    paths.bower+'angular-moment/angular-moment.min.js',
+    paths.bower+'ionic-modal-select/dist/ionic-modal-select.min.js',
+    paths.bower+'ngCordova/dist/ng-cordova.min.js',
+    paths.bower+'checklist-model/checklist-model.js',
+    paths.js+'inview.js',
+    paths.js+'gallery.js',
     paths.js+'irk.js'
     ])
     .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(concat('plugins.min.js'))
+    .pipe(concat('compact.min.js'))
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.lib));
-  gulp.src([
-    paths.js+'app.js',
-    paths.js+'services.js',
-    paths.js+'controllers.js'
-    ])
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(concat('app.min.js'))
-    .pipe(uglify())
-    .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(paths.lib))
+    .pipe(gulp.dest(paths.bower))
     .on('end', done);
+
+  // gulp.src([
+  //   paths.js+'app.js',
+  //   paths.js+'services.js',
+  //   paths.js+'controllers.js'
+  //   ])
+  //   .pipe(sourcemaps.init({loadMaps: true}))
+  //   .pipe(concat('app.min.js'))
+  //   .pipe(uglify())
+  //   .pipe(sourcemaps.write('.'))
+  //   .pipe(gulp.dest(paths.lib))
+  //   .on('end', done);
+
 });
 
 gulp.task('watch', ['sass'], function() {

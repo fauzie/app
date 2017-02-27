@@ -2,6 +2,10 @@
   <ion-nav-title>
     About Me <span class="subtitle">find out about me</span>
   </ion-nav-title>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+    </button>
+  </ion-nav-buttons>
   <ion-content>
     <div class="row row-center">
       <div class="col col-center">
@@ -17,7 +21,7 @@
       <div class="col col-center">
         <div class="col text-center">
           <p><em>Start using my service right now.</em></p>
-          <button class="button button-positive button-outline" ng-click="getQuote()">Start Now</button>
+          <button class="button button-positive" ng-click="getQuote()">Get Quote</button>
         </div>
       </div>
     </div>

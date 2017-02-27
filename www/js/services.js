@@ -8,15 +8,30 @@
 
 angular.module('fauzie.services', [])
 
-.factory('fireService', function($q, $firebaseAuth, $firebaseStorage, $firebaseArray, $firebaseObject, $cordovaDevice, addPopup) {
-
-  var deviceID = (typeof window.device === 'undefined') ? 'Browser' : $cordovaDevice.getUUID();
+.factory('fireService', function($q, $firebaseAuth, $firebaseStorage, $firebaseArray, $firebaseObject, addPopup) {
 
   return {
     items: [],
     userData: {},
     Auth: function () {
       return $firebaseAuth();
+    },
+    setAdmin: function() {
+      var storage = window.localStorage.getItem('fauzieapp.admin');
+
+      if (storage !== null && storage.length) {
+        return storage;
+      }
+
+      var admRef = firebase.database().ref('admin');
+      var adminD = $firebaseObject(admRef);
+      
+      adminD.$loaded(function(admin) {
+        window.localStorage.setItem('fauzieapp.admin', admin.$value);
+      });
+    },
+    getAdmin: function() {
+      return window.localStorage.getItem('fauzieapp.admin');
     },
     setUserData: function (userId, data) {
       var defer = $q.defer();
@@ -93,8 +108,8 @@ angular.module('fauzie.services', [])
       sort = sort || 'ASC';
       var results = $q.defer();
       var ref = firebase.database().ref('site');
-      var query = ref.child(data).orderByChild(order);
-      var objkey  = deviceID + '|' + ([data,order,sort]).toString();
+      var query = ref.child(data);
+      var objkey  = 'site:' + data;
       var storage = JSON.parse(window.localStorage.getItem(objkey));
 
       if ( storage !== null && storage.length > 1 ) {
@@ -102,8 +117,10 @@ angular.module('fauzie.services', [])
         results.resolve(this.items);
         return results.promise;
       }
-
-      if (order !== null && sort == 'ASC') {
+      if (order !== null) {
+        query.orderByChild(order);
+      }
+      if (sort !== null && sort == 'ASC') {
         query.limitToLast(100);
       } else {
         query.limitToFirst(100);
@@ -188,7 +205,14 @@ angular.module('fauzie.services', [])
       var userData = $firebaseObject(ref);
 
       userData.$loaded(function() {
-        userData.quotes.push(quoteId);
+        if (angular.isUndefined(userData.quotes)) {
+          console.log('quotes is undefined');
+          userData.quotes = [quoteId];
+        } else {
+          console.log('quotes push');
+          userData.quotes.push(quoteId);
+        }
+        console.log('quotes', userData.quotes);
         userData.$save().then(function(ref) {
           q.resolve(ref.key);
         }).catch(function(err) {
@@ -202,13 +226,14 @@ angular.module('fauzie.services', [])
       var q = $q.defer();
       var user  = $firebaseAuth().$getAuth().uid;
       var ref   = firebase.database().ref('quotes/'+user).child(quoteId);
+      var msref = firebase.database().ref('messages/'+user).child(quoteId);
       var usref = firebase.database().ref('users/'+user).child('quotes');
       var quote = $firebaseObject(ref);
+      var msg   = $firebaseObject(msref);
       var user  = $firebaseArray(usref);
 
-      quote.$remove().then(function(res) {
+      $q.all([ quote.$remove(), msg.$remove() ]).then(function(res) {
         user.$loaded(function() {
-          console.log('userQuotes',user);
           var index = user.$getRecord(quoteId);
           user.$remove(index).then(function() {
             q.resolve(quoteId);
@@ -218,8 +243,86 @@ angular.module('fauzie.services', [])
         q.reject(err.message);
       });
       return q.promise;
+    },
+    getUserAvatar: function(userId) {
+      var storageRef = firebase.storage().ref('user/'+userId+'/avatar.jpg');
+      return $firebaseStorage(storageRef);
     }
   }
+})
+
+.factory('fireChats', function($q, $firebaseAuth, $firebaseArray, $firebaseObject, addPopup) {
+
+  var user = $firebaseAuth().$getAuth();
+  var msgRef = firebase.database().ref('messages/'+user.uid);
+
+  return {
+    getMessages: function(quoteId) {
+      var q = $q.defer();
+      var query = msgRef.child(quoteId).orderByChild('time').limitToLast(20);
+      var messages = $firebaseArray(query);
+
+      messages.$loaded(function(msg) {
+        q.resolve(msg);
+      }, function(err) {
+        q.reject(err.message);
+      });
+      return q.promise;
+    },
+    setLatest: function(msgId, quoteId) {
+      var storageKey = user.uid+'--message--'+quoteId;
+      window.localStorage.setItem(storageKey, msgId);
+      return msgId;
+    },
+    getLatest: function(quoteId) {
+      var storageKey = user.uid+'--message--'+quoteId;
+      return window.localStorage.getItem(storageKey);
+    }
+  };
+
+})
+
+.factory('fireAdmin', function($q, $firebaseAuth, $firebaseArray, $firebaseObject) {
+
+  var user = $firebaseAuth().$getAuth();
+
+  return {
+    get: function() {
+      return window.localStorage.getItem('fauzieapp.admin');
+    },
+    getAll: function(rows) {
+      var q = $q.defer();
+      
+      var ref = firebase.database().ref(rows);
+      var obj = $firebaseObject(ref);
+      
+      obj.$loaded(function(){
+        q.resolve(obj);
+      }, function(err) {
+        q.reject(err.message);
+      });
+
+      return q.promise;
+    },
+    getSite: function(posts) {
+      var q = $q.defer();
+      var ref = firebase.database().ref('site').child(posts);
+      var query = $firebaseArray(ref);
+
+      query.$loaded(function(postArray) {
+        if (postArray.$resolved) {
+          q.resolve(postArray);
+        } else {
+          q.reject('No internet connection.');
+        }
+      }, function(err) {
+        q.reject(err.message);
+      });
+
+      return q.promise;
+    }
+  };
+
 })
 
 .factory('addPopup', function($ionicPopup, $timeout) {
@@ -247,88 +350,4 @@ angular.module('fauzie.services', [])
     }
   }
 
-})
-
-.provider('relativeDateFilter', function () {
-  var self = this;
-  self.conversions = {
-    now: 1,
-    second: 1000,
-    minute: 60,
-    hour: 60,
-    day: 24
-  };
-  self.labelText = {
-    now: 'now',
-    before_second: {
-      'one': '%n second ago',
-      'more': '%n seconds ago'
-    },
-    before_minute: {
-      'one': '%n minute ago',
-      'more': '%n minutes ago'
-    },
-    before_hour: {
-      'one': '%n hour ago',
-      'more': '%n hours ago'
-    },
-    before_day: {
-      'one': '%n day ago',
-      'more': '%n days ago'
-    },
-    after_second: {
-      'one': '%n second left',
-      'more': '%n seconds left'
-    },
-    after_minute: {
-      'one': '%n minute left',
-      'more': '%n minutes left'
-    },
-    after_hour: {
-      'one': '%n hour left',
-      'more': '%n hours left'
-    },
-    after_day: {
-      'one': '%n day left',
-      'more': '%n days left'
-    }
-  };
-  self.datePattern = 'yyyy-MM-dd';
-  self.defaultFormat = function (unit_key, delta, relativeTime) {
-    return unit_key === 'day' && delta > 0;
-  };
-  var getText = function (key) {
-    var labelKey = key;
-    return self.labelText[labelKey];
-  }, localize = function (delta, unit_key) {
-    if (unit_key !== 'now') {
-      var prefix = 'before_';
-      if (delta < 0) {
-        prefix = 'after_';
-      }
-      unit_key = prefix + unit_key;
-    }
-    var label = getText(unit_key), unit = angular.isString(label) ? label : delta == 1 ? label.one : label.more;
-    return unit.replace('%n', Math.abs(delta));
-  };
-  this.$get = [
-    'dateFilter',
-    function (dateFilter) {
-      return function (date) {
-        var now = new Date(), relativeTime = new Date(date), delta = now - relativeTime, unit_key = 'now', key;
-        var conversions = self.conversions;
-        for (key in conversions) {
-          if (Math.abs(delta) < conversions[key]) {
-            break;
-          }
-          unit_key = key;
-          delta = delta / conversions[key];
-        }
-        if (self.defaultFormat(unit_key, delta, relativeTime)) {
-          return dateFilter(relativeTime, self.datePattern);
-        }
-        return localize(Math.floor(delta), unit_key);
-      };
-    }
-  ];
 });

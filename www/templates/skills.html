@@ -2,18 +2,19 @@
   <ion-nav-title>
     Skills <span class="subtitle">illustration of my skill mastery</span>
   </ion-nav-title>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+    </button>
+  </ion-nav-buttons>
   <ion-content>
-    <ion-list ng-animate-children class="skills">
-      <ion-item 
-      auto-divider 
-      auto-divider-value="{{skill.type}}" 
-      auto-divider-function="dividerFunction" 
-      class="item-icon-left" 
+    <div class="list skills">
+      <div class="item" 
+      ng-class="skill.divider? 'item-divider' : 'item-icon-left'"
       ng-repeat="skill in skills">
-        <i class="icon {{skill.icon}}"></i> {{skill.name}}
-        <span class="badge badge-assertive">{{skill.value}}%</span>
-        <span class="skillbar" style="width:{{skill.value}}%"></span>
-      </ion-item>
-    </ion-list>
+        <i class="icon {{skill.icon}}" ng-hide="skill.divider"></i> {{skill.name}}
+        <span class="badge badge-assertive" ng-hide="skill.divider">{{skill.value}}%</span>
+        <span class="skillbar" style="width:{{skill.value}}%" ng-hide="skill.divider"></span>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

@@ -6,6 +6,10 @@
  * @package   fauzie.app
  */
 
+html, body {
+  background-color: $base-background-color;
+}
+
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   color: #fff;
@@ -14,6 +18,12 @@ h1, h2, h3, h4, h5, h6,
 .button {
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+form fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 input[disabled],
@@ -25,11 +35,66 @@ select[readonly] {
   color: #c0c0c0;
 }
 
+.checkbox {
+  & input:before,
+  &-icon:before {
+    background-color: $base-background-color;
+  }
+}
 
-.platform-android {
+// Radio Checked
+.item-radio input {
+  &:checked + .radio-content .item-content {
+    background: rgba($base-background-color, 0.2);
+  }
+}
+
+.item-input-wrapper {
+  background-color: transparent;
+}
+
+.item.item-stacked-label {
+  input, & textarea {
+    background-color: transparent;
+  }
+}
+
+.faded:not(.animated) {
+  opacity: 0;
+}
+
+.hidden:not(.animated) {
+  visibility: hidden;
+}
+
+.row.wrap {
+  flex-flow: row wrap;
+}
+
+.uploader {
+  background-color: $base-background-color;
+  .row {
+    height: 100%;
+    text-align: center;
+  }
+  .img-ava {
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: block;
+    margin: 0 auto;
+    width: 220px;
+    height: 220px;
+    border: 8px solid $positive;
+    border-radius: 50%;
+    box-sizing: content-box;
+  }
+}
+
+.platform-android, .platform-browser {
 
   .backdrop {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba($black, 0.8);
   }
 
   .loading-container .loading {
@@ -39,12 +104,28 @@ select[readonly] {
     }
   }
 
-  .action-sheet-backdrop.active {
-    background-color: fade($royal, 50%);
+  .progress-bar {
+    background-color: $black;
+    border-radius: 3px;
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 3px;
+    box-shadow: 0 0 3px $black;
+    overflow: hidden;
   }
 
-  .action-sheet-group {
-    background-color: $royal;
+  .progress-bar > span {
+    background-color: $positive;
+    border-radius: 3px;
+    display: block;
+    height: 100%;
+    transition: width 1s linear;
+    box-shadow: inset 1px 1px 1px 0px rgba($black, 0.3), inset -1px -1px 1px 0px rgba($black, 0.3);
+  }
+
+  .action-sheet-backdrop.active {
+    background-color: rgba($black, 0.3);
   }
 
   .action-sheet {
@@ -60,8 +141,25 @@ select[readonly] {
       background: $dark;
     }
 
+    &-group,
+    &-options {
+      background: transparent !important;
+    }
+
+    & .action-sheet-title, 
+    & .button {
+      background-color: $black !important;
+      border: 0 !important;
+      text-align: center !important;
+      margin-top: 5px;
+    }
+
   }
 
+}
+
+.tabs-striped .tabs {
+  border-bottom-width: 0 !important;
 }
 
 .padding-2x {
@@ -126,6 +224,14 @@ select[readonly] {
   height: auto;
 }
 
+.item .item-options .button {
+  border-left: 1px solid $stable;
+  background: $black;
+  color: rgba($white, 0.6);
+  font-size: 25px;
+  padding: 0 25px;
+}
+
 // Specific Page Styles
 
 ion-view[state="app.home"] {
@@ -140,6 +246,8 @@ ion-view[state="app.home"] {
     .btn-home-about {
       margin-top: 20px;
       margin-bottom: 10px;
+      line-height: 1;
+      padding: 12px 20px;
     }
   }
 }
@@ -159,37 +267,38 @@ ion-view[state="app.about"] {
 }
 
 ion-view[state="app.services"] {
-  background-color: #222;
+  background-color: $stable;
   border-radius: 6px;
-  .list.card {
-    background-color: #222;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-    .item:first-child {
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
-    }
-    .item:last-child {
-      border-color: #fa023c;
-      border-bottom-right-radius: 6px;
-      border-bottom-left-radius: 6px;
-    }
-    .item-body {
-      .icon {
-        font-size: 100px;
-        line-height: 110px;
-      }
-      p:last-child {
-        margin: 15px auto 5px;
-        max-width: 85%;
-      }
-    }
-  }
 }
 
 ion-view[state="app.project"] {
-  background-color: #1b1b1b;
+  background-color: $assertive;
   ion-content {
     padding-top: 20px;
+  }
+}
+
+.list.card {
+  background-color: $stable;
+  box-shadow: 0 1px 10px rgba($black, 0.2);
+  .item:first-child {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  .item:last-child {
+    border-color: $positive;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+  .item-body {
+    .icon {
+      font-size: 100px;
+      line-height: 110px;
+    }
+    p:last-child {
+      margin: 15px auto 5px;
+      max-width: 85%;
+    }
   }
 }
 
@@ -202,16 +311,14 @@ ion-view[state="app.project"] {
   }
 }
 
-.services {
-  .card {
-    &.ng-enter-stagger {
-      -webkit-animation-delay: .2s;
-      animation-delay: .2s;
-    }
-    &.ng-enter {
-      -webkit-animation: fadeInUpBig 1s;
-      animation: fadeInUpBig 1s;
-    }
+.exp-item {
+  &.ng-enter-stagger {
+    -webkit-animation-delay: .4s;
+    animation-delay: .4s;
+  }
+  &.ng-enter {
+    -webkit-animation: slideInRight .8s;
+    animation: slideInRight .8s;
   }
 }
 
@@ -255,40 +362,39 @@ ion-view[state="app.project"] {
     }
     .skillbar {
       display: block;
-      background-color: #fa023c;
+      background-color: $positive;
       border: 0;
       height: 3px;
-      max-width: 100%;
       position: absolute;
       bottom: 0;
       left: 0;
       z-index: 2;
+      max-width: 100%;
+      transition: max-width ease 1s;
     }
-    &.ng-enter-stagger .skillbar {
-      -webkit-animation-delay: .2s;
-      animation-delay: .2s;
+    &.ng-enter-stagger {
+      -webkit-transition-delay: .5s;
+      transition-delay: .5s;
+      -webkit-transition-duration: 0s;
+      transition-duration: 0s;
+      .skillbar {
+        max-width: 0;
+        visibility: visible;
+      }
     }
-    &.ng-enter .skillbar {
-      -webkit-animation: slideInLeft 1s;
-      animation: slideInLeft 1s;
+    &.ng-enter {
+      transition: all ease .5s;
+      .skillbar {
+        max-width: 0;
+        visibility: hidden;
+      }
     }
-  }
-}
-
-.exp-item {
-  &.ng-enter-stagger {
-    -webkit-animation-delay: .4s;
-    animation-delay: .4s;
-  }
-  &.ng-enter {
-    -webkit-animation: slideInRight 1s;
-    animation: slideInRight 1s;
   }
 }
 
 hr.primary {
   border: 0;
-  border: 3px solid #fa023c;
+  border: 3px solid $positive;
   max-width: 120px;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -363,7 +469,8 @@ hr.primary {
     margin-bottom: 30px;
   }
   .img-wrap {
-    background-color: #000;
+    background-color: $black;
+    background-image: url('../img/user_profile.png');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -372,20 +479,29 @@ hr.primary {
     width: 100px;
     margin: 30px auto 5px;
     border-radius: 100px;
-    border: 6px solid #111;
-    box-shadow: 0 0 0px 5px #fa023c;
+    border: 6px solid $black;
+    box-shadow: 0 0 0px 5px $positive;
     box-sizing: content-box;
     position: relative;
+    overflow: hidden;
     z-index: 1;
+    > img {
+      display: block;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
     .button {
       display: block;
-      color: #fff;
+      color: $white;
       position: absolute;
       text-align: center;
       font-size: 40px;
       margin-top: -20px;
       margin-left: -20px;
       padding: 0;
+      opacity: .8;
       height: 40px;
       width: 40px;
       top: 50%;
@@ -485,7 +601,7 @@ hr.primary {
   }
 }
 
-.form-validate {
+.item-input .ng-dirty {
   background: transparent;
   + .field-validate {
     display: block;
@@ -522,19 +638,11 @@ hr.primary {
   }
   &.ng-invalid + .field-validate:after {
     content: "\f128";
-    color: #fa023c;
+    color: $positive;
   }
   &.ng-valid + .field-validate:after {
     content: "\f120";
-    color: #2adc00;
-  }
-}
-
-
-// Radio Checked
-.item-radio input {
-  &:checked + .radio-content .item-content {
-    background: rgba(0, 0, 0, 0.2);
+    color: $balanced;
   }
 }
 
@@ -663,7 +771,7 @@ hr.primary {
     font-size: 80%;
     float: left;
     padding: 0 10px;
-    padding-left: 40px;
+    padding-left: 45px;
     opacity: 0;
     -webkit-transition: all .15s ease-in-out;
     transition: all .15s ease-in-out;
@@ -701,12 +809,168 @@ hr.primary {
     .time {
       float: right;
       padding-left: 0;
-      padding-right: 40px;
+      padding-right: 45px;
     }
     .user.avatar {
       left: auto;
       right: 0;
       margin: 5px 0 5px 5px;
     }
+  }
+}
+
+// Ionic Select Modal
+.ionic-select-modal {
+  .bar {
+    &-header .title {
+      text-align: center;
+    }
+    &-footer {
+      .button {
+        color: $positive;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 5px;
+        border: 0 !important;
+      }
+      .title.title-left {
+        text-align: right;
+      }
+    }
+  }
+  
+  &.single-select {
+    .bar-footer .button {
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+
+  .item {
+    .icon {
+      color: $positive;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 36px;
+      width: 32px;
+      text-align: center;
+      line-height: 1;
+      margin-right: 10px;
+    }
+    &.option-selected {
+      background-color: $stable;
+    }
+    .titlesub {
+      display: inline-block;
+      vertical-align: middle;
+      em {
+        font-size: 12px;
+        font-style: italic;
+        opacity: .6;
+      }
+    }
+  }
+}
+
+.item-input.item-floating-label .toggle,
+.modal-select-field .button {
+  position: absolute;
+  right: 5px;
+  bottom: 8px;
+  z-index: 11;
+}
+
+.modal-select-field .button.ng-dirty {
+  right: 25px;
+}
+
+.item .badge {
+  display: inline-block;
+  text-align: center;
+  top: 50%;
+  right: 20px;
+  margin-top: -10px;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.admin-dashboard {
+  .item .badge {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .row.site {
+    background-color: $assertive;
+    flex-wrap: wrap;
+    .list.card {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.admin-site {
+  &.listitem {
+    background-color: $assertive;
+    .list.card .item {
+      &.tabs {
+        background-color: $dark;
+        > .tab-item {
+          border-top: 1px solid rgba($positive, 0.2);
+          &.activated {
+            border-top: 2px solid $positive;
+          }
+        }
+      }
+      &.title {
+        color: $positive;
+        font-size: 16px;
+      }
+    }
+  }
+  .item .item-options {
+    visibility: visible;
+    z-index: 3;
+    .button {
+      border-left: 0;
+      background: transparent;
+    }
+  }
+}
+
+body .ionic_datepicker_popup {
+  .popup-body .selected_date_full {
+    background:$dark;
+    border-bottom: 1px solid $positive;
+  }
+  .popup-body {
+    background: $assertive;
+    & .month_select:after,
+    & .year_select:after,
+    & .button-clear {
+      color: $positive;
+    }
+    .year_select, & .month_select {
+      border-color: $positive;
+      select {
+        color: $light;
+      }
+    }
+  }
+  .popup-buttons {
+    background: $assertive;
+    button {
+      background: $dark;
+      color: $positive;
+      border-color: $positive;
+    }
+  }
+  .selected_date {
+    background: $positive;
+    border-color: $positive;
   }
 }

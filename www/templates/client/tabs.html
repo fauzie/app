@@ -1,4 +1,4 @@
-<ion-view view-title="Dashboard">
+<ion-view view-title="Dashboard" on-hold="onHold($event)" on-release="onRelease($event)">
   <ion-tabs class="tabs-royal tabs-color-positive tabs-icon-left">
     <!-- Dashboard Tab -->
     <ion-tab title="Dashboard" icon-off="ion-ios-speedometer-outline" icon-on="ion-ios-speedometer" ui-sref="app.client.dashboard">
@@ -20,10 +20,13 @@
     <ion-popover-view>
       <ion-content>
         <div class="list">
-          <a class="item" ui-sref="app.client.settings" ng-click="popover.hide($event)">
-            <i class="icon ion-ios-gear"></i>&nbsp;&nbsp;Settings
+          <a class="item" ng-click="popover.hide($event);showAvatarMenu()">
+            <i class="icon ion-person-add"></i>&nbsp;&nbsp;Update Avatar
           </a>
-          <a class="item" ng-click="authObj.$signOut()">
+          <a class="item" ui-sref="app.client.settings" ng-click="popover.hide($event)">
+            <i class="icon ion-ios-gear"></i>&nbsp;&nbsp;User Settings
+          </a>
+          <a class="item" ng-click="popover.hide($event); authObj.$signOut()">
             <i class="icon ion-log-out"></i>&nbsp;&nbsp;Log Out
           </a>
         </div>
@@ -37,8 +40,11 @@
     <ion-popover-view>
       <ion-content>
         <div class="list">
-          <a class="item" ng-click="popover.hide($event); openChat()">
-            <i class="icon ion-android-chat"></i>&nbsp;&nbsp;Project Chat
+          <a class="item" ng-click="popover.hide($event); chatModal.show()">
+            <i class="icon ion-android-chat"></i>&nbsp;&nbsp;Open Discussion
+          </a>
+          <a class="item" ng-click="popover.hide($event); editQuote()">
+            <i class="icon ion-edit"></i>&nbsp;&nbsp;Edit Project
           </a>
           <a class="item" ng-click="popover.hide($event); removeQuote()">
             <i class="icon ion-trash-a"></i>&nbsp;&nbsp;Remove Project

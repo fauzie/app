@@ -752,7 +752,9 @@ angular.module('ionicResearchKit',[])
                     '<div class="irk-text-centered">'+
                     '<h2>'+attr.title+'</h2>'+
                     (attr.text ? '<p>'+attr.text+'</p>' : '')+
-                    (attr.link ? '<a class="button button-clear button-positive irk-button-learn-more" href="'+attr.link+'" target="_system">'+(attr.linkText ? attr.linkText : 'Learn more')+'</a>' : '')+
+                    (attr.link ? '<a class="button button-clear button-positive irk-button-learn-more" href="'+attr.link+'"'+
+                    (attr.linkTarget ? ' ng-click="'+attr.linkTarget+'"' : '')+'>'+
+                    (attr.linkText ? attr.linkText : 'Learn more')+'</a>' : '')+
                     '</div>'+
                     '<div class="irk-spacer"></div>'+
                     (attr.image ? '<div class="irk-image-spacer"></div><div class="item irk-step-image '+attr.image+'"></div><div class="irk-image-spacer"></div>' : '')+

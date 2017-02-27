@@ -7,19 +7,19 @@
       {{quote.project}} Discussions<span class="subtitle">With: Rizal Fauzie (admin)</span>
     </h1>
     <div class="buttons">
-      <button class="button icon ion-close-round" ng-click="closeChat()"></button>
+      <button class="button icon ion-close-round" ng-click="chatModal.hide()"></button>
     </div>
   </ion-header-bar>
 
   <ion-content ng-click="hideTime = !hideTime">
     <div ng-repeat="message in messages" ng-class="{mychat: message.userId == myId}" class="messages">
       <div class="user avatar">
-        <img src="img/fauzie-ava.jpg" alt="">
+        <img ng-src="{{getAvatar(message.userId)}}" alt="">
       </div>
       <div class="message">
         <span>{{ message.text }}</span>
       </div>
-      <div class="time" ng-class="{'':hideTime, 'showed':!hideTime}">{{message.time}}</div>
+      <div class="time" ng-class="{'':hideTime, 'showed':!hideTime}">{{message.time|relativeDate}}</div>
     </div>
   </ion-content>
 
